@@ -30,20 +30,13 @@ export default function NosDiplomesPage() {
 
           {/* Carte Google Maps */}
           <div className="mb-12">
-            <div className="rounded-xl overflow-hidden shadow-lg relative h-[600px]">
-              {/* Masque invisible du header */}
-              <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none" style={{
-                height: '85px',
-                background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 70%, transparent 100%)'
-              }}></div>
+            <div className="rounded-xl overflow-hidden shadow-lg" style={{ width: '100%', overflow: 'hidden' }}>
               <iframe
-                src="https://www.google.com/maps/d/u/0/embed?mid=1b9BpH2CUfwAoL3p2gD-TIPRAKHKFumQ&ehbc=2E312F&ll=48.17938358781295%2C1.1694937685604643&z=6"
+                src="https://www.google.com/maps/d/u/0/embed?mid=1b9BpH2CUfwAoL3p2gD-TIPRAKHKFumQ&ehbc=2E312F"
                 width="100%"
-                height="685"
-                style={{ border: 0, marginTop: '-85px' }}
-                allowFullScreen
+                height="600"
+                style={{ border: 0, marginTop: '-60px' }}
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
                 title="Carte des diplômés FOC Iroise"
               />
             </div>

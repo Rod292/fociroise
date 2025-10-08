@@ -21,88 +21,52 @@ export default function MentionsLegalesPage() {
           </h1>
 
           <div className="prose prose-lg prose-blue max-w-none">
-            <h2>Éditeur du site</h2>
             <p>
-              <strong>FOC Iroise Brest</strong><br />
-              Formation Occlusale Continue<br />
-              [Adresse complète à ajouter]<br />
-              [Code postal et ville]<br />
-              Téléphone : [Numéro de téléphone]<br />
-              Email : [Email de contact]
+              Le site FOC Iroise Brest est édité par la société FOC Iroise Brest, immatriculée au
+              Numéro SIREN 948086368 et ayant son siège social au 22 rue Algésiras 29200 Brest.
             </p>
 
-            <h2>Directeur de la publication</h2>
             <p>
-              [Nom du directeur de publication]
+              Le directeur de la publication du site est Jacques-Olivier PERS.
             </p>
 
-            <h2>Hébergement</h2>
             <p>
-              Ce site est hébergé par :<br />
-              [Nom de l'hébergeur]<br />
-              [Adresse de l'hébergeur]<br />
-              [Téléphone de l'hébergeur]
+              Le site est hébergé par la société Vercel Inc. dont le siège social est situé à
+              440 N Barranca Ave #4133, Covina, CA 91723, États-Unis.
             </p>
 
-            <h2>Propriété intellectuelle</h2>
             <p>
-              L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur
-              et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour
-              les documents téléchargeables et les représentations iconographiques et photographiques.
-            </p>
-            <p>
-              La reproduction de tout ou partie de ce site sur un support électronique ou autre quel qu'il soit
-              est formellement interdite sauf autorisation expresse du directeur de la publication.
+              Pour toute question relative aux contenus du site ou à l'utilisation de ce dernier,
+              vous pouvez contacter le responsable de la publication à l'adresse suivante :
+              contact@fociroise.fr
             </p>
 
-            <h2>Protection des données personnelles (RGPD)</h2>
             <p>
-              Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique
-              et Libertés, vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition
-              aux données personnelles vous concernant.
-            </p>
-            <p>
-              Les informations recueillies sur ce site sont enregistrées dans un fichier informatisé par
-              FOC Iroise pour la gestion des inscriptions et des contacts. Elles sont conservées pendant
-              [durée de conservation] et sont destinées à [finalités].
-            </p>
-            <p>
-              Pour exercer vos droits, vous pouvez contacter notre responsable du traitement des données :<br />
-              Email : [email RGPD]<br />
-              Courrier : [adresse postale]
+              Les informations présentes sur le site sont non contractuelles et sujettes à
+              modification sans préavis.
             </p>
 
-            <h2>Cookies</h2>
             <p>
-              Ce site n'utilise actuellement pas de cookies de tracking ou de publicité.
-              [À adapter selon l'utilisation réelle de cookies]
+              Le site peut contenir des liens vers des sites tiers. FOC Iroise Brest ne dispose
+              d'aucun moyen de contrôle sur ces sites et décline toute responsabilité quant aux
+              contenus qui y sont présents.
             </p>
 
-            <h2>Crédits</h2>
             <p>
-              Conception et développement : [Nom du développeur/agence]<br />
-              Photographies : [Crédits photos si applicable]
+              Le site FOC Iroise Brest est soumis au droit français.
             </p>
 
-            <h2>Conditions d'utilisation</h2>
             <p>
-              L'utilisation du site FOC Iroise implique l'acceptation pleine et entière des conditions
-              générales d'utilisation décrites ci-après. Ces conditions d'utilisation sont susceptibles
-              d'être modifiées ou complétées à tout moment.
+              Il est rappelé que la confidentialité de l'ensemble des échanges sur Internet n'est
+              pas garantie et que chaque internaute doit prendre toutes les mesures appropriées de
+              façon à protéger ses propres données et/ou logiciels de la contamination d'éventuels
+              virus circulant sur le réseau.
             </p>
 
-            <h2>Limitation de responsabilité</h2>
             <p>
-              Les informations contenues sur ce site sont aussi précises que possible et le site est
-              périodiquement remis à jour, mais peut toutefois contenir des inexactitudes, des omissions
-              ou des lacunes. Si vous constatez une erreur, merci de nous la signaler pour que nous
-              puissions la corriger.
-            </p>
-
-            <h2>Litiges</h2>
-            <p>
-              Les présentes conditions sont régies par les lois françaises et tout litige qui ne pourrait
-              faire l'objet d'un règlement amiable sera porté devant les tribunaux compétents.
+              Il convient de lire attentivement les conditions d'utilisation du site avant toute
+              navigation. L'accès et l'utilisation du site FOC Iroise Brest impliquent l'acceptation
+              pleine et entière des conditions d'utilisation ci-dessus décrites.
             </p>
 
             <div className="mt-12 pt-8 border-t border-gray-200 text-sm text-gray-600">

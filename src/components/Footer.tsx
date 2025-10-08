@@ -153,21 +153,12 @@ export default function Footer() {
             <p className="text-sm text-gray-600">
               &copy; {new Date().getFullYear()} FOC Iroise Brest. Tous droits réservés.
             </p>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/mentions-legales"
-                className="text-sm text-gray-600 hover:text-primary-600 transition-colors"
-              >
-                Mentions légales
-              </Link>
-              <span className="text-gray-400">•</span>
-              <a
-                href="#"
-                className="text-sm text-gray-600 hover:text-primary-600 transition-colors"
-              >
-                Politique de confidentialité
-              </a>
-            </div>
+            <Link
+              href="/mentions-legales"
+              className="text-sm text-gray-600 hover:text-primary-600 transition-colors"
+            >
+              Mentions légales
+            </Link>
           </div>
         </div>
       </div>
