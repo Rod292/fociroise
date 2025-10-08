@@ -51,26 +51,42 @@ export default function InscriptionFormWizard() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
 
   const searchAddress = async (query: string) => {
     if (query.length < 3) {
       setAddressSuggestions([])
+      setShowSuggestions(false)
       return
     }
 
+    const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+    console.log('🔍 Searching address:', query)
+    console.log('🔑 Token exists:', !!token)
+
     try {
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?` +
-        `access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}&` +
-        `country=FR&` +
-        `language=fr&` +
-        `types=address`
-      )
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${token}&country=FR&language=fr&types=address&limit=5`
+      console.log('📍 Fetching from Mapbox API')
+
+      const response = await fetch(url)
       const data = await response.json()
-      setAddressSuggestions(data.features || [])
-      setShowSuggestions(true)
+
+      console.log('✅ Response status:', response.status)
+      console.log('📦 Features found:', data.features?.length || 0)
+
+      if (data.features && data.features.length > 0) {
+        setAddressSuggestions(data.features)
+        setShowSuggestions(true)
+        console.log('✨ Showing suggestions')
+      } else {
+        setAddressSuggestions([])
+        setShowSuggestions(false)
+        console.log('⚠️ No suggestions found')
+      }
     } catch (error) {
-      console.error('Error fetching address:', error)
+      console.error('❌ Error fetching address:', error)
+      setAddressSuggestions([])
+      setShowSuggestions(false)
     }
   }
 
@@ -103,9 +119,15 @@ export default function InscriptionFormWizard() {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
 
-    // Trigger address search for address field
+    // Trigger address search for address field with debounce
     if (name === 'adresseProfessionnelle') {
-      searchAddress(value)
+      if (searchTimeout) {
+        clearTimeout(searchTimeout)
+      }
+      const timeout = setTimeout(() => {
+        searchAddress(value)
+      }, 300)
+      setSearchTimeout(timeout)
     }
 
     // Clear error when user types
