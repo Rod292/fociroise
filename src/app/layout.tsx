@@ -27,7 +27,12 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://fociroise.fr'), // À remplacer par votre domaine réel
+  metadataBase: new URL('https://fociroise.fr'),
+  icons: {
+    icon: '/images/LogoWhite.png',
+    shortcut: '/images/LogoWhite.png',
+    apple: '/images/LogoWhite.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
@@ -35,6 +40,14 @@ export const metadata: Metadata = {
     title: 'FOC Iroise – Formation occlusale continue à Brest',
     description: 'Formation occlusale continue à Brest pour chirurgiens-dentistes',
     siteName: 'FOC Iroise Brest',
+    images: [
+      {
+        url: '/images/LogoWhite.png',
+        width: 1200,
+        height: 630,
+        alt: 'FOC Iroise - Formation Occlusale Continue',
+      },
+    ],
   },
   robots: {
     index: true,
