@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const MODULE_DATES_2026 = {
   module1: [
@@ -49,6 +49,40 @@ export default function InscriptionFormWizard() {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [mapboxLoaded, setMapboxLoaded] = useState(false)
+
+  useEffect(() => {
+    // Load Mapbox Search JS script
+    const script = document.createElement('script')
+    script.src = 'https://api.mapbox.com/search-js/v1.0.0-beta.21/web.js'
+    script.onload = () => {
+      setMapboxLoaded(true)
+      // @ts-ignore
+      if (window.mapboxsearch) {
+        // @ts-ignore
+        const autofill = new window.mapboxsearch.autofill({
+          accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '',
+        })
+        autofill.addEventListener('retrieve', (e: any) => {
+          const feature = e.detail.features[0]
+          if (feature && feature.properties) {
+            setFormData({
+              ...formData,
+              adresseProfessionnelle: feature.properties.full_address || feature.properties.address_line1 || '',
+              codePostal: feature.properties.postcode || '',
+              ville: feature.properties.place || '',
+              pays: feature.properties.country || 'France',
+            })
+          }
+        })
+      }
+    }
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://api.mapbox.com/search-js/v1.0.0-beta.21/web.css'
+    document.head.appendChild(link)
+    document.head.appendChild(script)
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -281,15 +315,23 @@ export default function InscriptionFormWizard() {
             </div>
 
             <div>
-              <label htmlFor="adresseProfessionnelle" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="adresseProfessionnelle" className="block text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 Adresse professionnelle *
+                {mapboxLoaded && (
+                  <span className="text-xs text-gray-500 font-normal">
+                    (recherche automatique activée)
+                  </span>
+                )}
               </label>
               <input
                 type="text"
                 id="adresseProfessionnelle"
                 name="adresseProfessionnelle"
+                autoComplete="off"
+                data-mapbox-autofill="true"
                 value={formData.adresseProfessionnelle}
                 onChange={handleChange}
+                placeholder="Commencez à taper votre adresse..."
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
                   errors.adresseProfessionnelle ? 'border-red-500' : 'border-gray-300'
                 }`}
@@ -306,6 +348,7 @@ export default function InscriptionFormWizard() {
                   type="text"
                   id="codePostal"
                   name="codePostal"
+                  autoComplete="postal-code"
                   value={formData.codePostal}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
@@ -323,6 +366,7 @@ export default function InscriptionFormWizard() {
                   type="text"
                   id="ville"
                   name="ville"
+                  autoComplete="address-level2"
                   value={formData.ville}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
@@ -340,6 +384,7 @@ export default function InscriptionFormWizard() {
                   type="text"
                   id="pays"
                   name="pays"
+                  autoComplete="country"
                   value={formData.pays}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
