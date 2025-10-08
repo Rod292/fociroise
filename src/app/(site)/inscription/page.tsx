@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { contactInfo } from '@/config/navigation'
-import InscriptionForm from '@/components/InscriptionForm'
+import InscriptionFormWizard from '@/components/InscriptionFormWizard'
 
 export const revalidate = 3600
 
@@ -58,7 +58,7 @@ export default function InscriptionPage() {
 
           {/* Formulaire */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 md:p-8 mb-12">
-            <InscriptionForm />
+            <InscriptionFormWizard />
           </div>
 
           {/* Dates 2026 */}
