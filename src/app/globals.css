@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables globales pour cohérence visuelle */
+:root {
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+}
+
+/* Base styles pour améliorer l'accessibilité et la lisibilité */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply text-gray-900 antialiased;
+  }
+
+  /* Focus visible pour accessibilité clavier */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500 ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  /* Amélioration lisibilité des liens */
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Composants réutilisables */
+@layer components {
+  .container-custom {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-spacing {
+    @apply py-16 sm:py-20 lg:py-24;
+  }
+
+  /* Style pour la navigation active */
+  .nav-link {
+    @apply text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium;
+  }
+
+  .nav-link-active {
+    @apply text-primary-600 font-semibold;
+  }
+}
