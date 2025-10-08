@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function POST(request: Request) {
   try {
@@ -21,6 +21,12 @@ export async function POST(request: Request) {
       moduleProthesiste,
       message,
     } = body
+
+    // Check if Resend is configured
+    if (!resend) {
+      console.log('Resend API key not configured. Logging form submission:', body)
+      return NextResponse.json({ success: true, message: 'Form submitted (email service not configured)' })
+    }
 
     // Email to admin
     const adminEmail = await resend.emails.send({
