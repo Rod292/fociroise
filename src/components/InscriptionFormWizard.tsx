@@ -49,44 +49,65 @@ export default function InscriptionFormWizard() {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [mapboxLoaded, setMapboxLoaded] = useState(false)
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
-  useEffect(() => {
-    // Load Mapbox Search JS script
-    const script = document.createElement('script')
-    script.src = 'https://api.mapbox.com/search-js/v1.0.0-beta.21/web.js'
-    script.onload = () => {
-      setMapboxLoaded(true)
-      // @ts-ignore
-      if (window.mapboxsearch) {
-        // @ts-ignore
-        const autofill = new window.mapboxsearch.autofill({
-          accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '',
-        })
-        autofill.addEventListener('retrieve', (e: any) => {
-          const feature = e.detail.features[0]
-          if (feature && feature.properties) {
-            setFormData({
-              ...formData,
-              adresseProfessionnelle: feature.properties.full_address || feature.properties.address_line1 || '',
-              codePostal: feature.properties.postcode || '',
-              ville: feature.properties.place || '',
-              pays: feature.properties.country || 'France',
-            })
-          }
-        })
-      }
+  const searchAddress = async (query: string) => {
+    if (query.length < 3) {
+      setAddressSuggestions([])
+      return
     }
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://api.mapbox.com/search-js/v1.0.0-beta.21/web.css'
-    document.head.appendChild(link)
-    document.head.appendChild(script)
-  }, [])
+
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?` +
+        `access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}&` +
+        `country=FR&` +
+        `language=fr&` +
+        `types=address`
+      )
+      const data = await response.json()
+      setAddressSuggestions(data.features || [])
+      setShowSuggestions(true)
+    } catch (error) {
+      console.error('Error fetching address:', error)
+    }
+  }
+
+  const selectAddress = (feature: any) => {
+    const address = feature.place_name
+    const context = feature.context || []
+
+    let postcode = ''
+    let city = ''
+    let country = 'France'
+
+    context.forEach((item: any) => {
+      if (item.id.startsWith('postcode')) postcode = item.text
+      if (item.id.startsWith('place')) city = item.text
+      if (item.id.startsWith('country')) country = item.text
+    })
+
+    setFormData({
+      ...formData,
+      adresseProfessionnelle: address.split(',')[0],
+      codePostal: postcode,
+      ville: city,
+      pays: country,
+    })
+    setShowSuggestions(false)
+    setAddressSuggestions([])
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
+
+    // Trigger address search for address field
+    if (name === 'adresseProfessionnelle') {
+      searchAddress(value)
+    }
+
     // Clear error when user types
     if (errors[name]) {
       setErrors({ ...errors, [name]: '' })
@@ -314,29 +335,51 @@ export default function InscriptionFormWizard() {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="adresseProfessionnelle" className="block text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+            <div className="relative">
+              <label htmlFor="adresseProfessionnelle" className="block text-sm font-medium text-gray-900 mb-2">
                 Adresse professionnelle *
-                {mapboxLoaded && (
-                  <span className="text-xs text-gray-500 font-normal">
-                    (recherche automatique activée)
-                  </span>
-                )}
+                <span className="text-xs text-gray-500 font-normal ml-2">
+                  (avec suggestions automatiques)
+                </span>
               </label>
               <input
                 type="text"
                 id="adresseProfessionnelle"
                 name="adresseProfessionnelle"
                 autoComplete="off"
-                data-mapbox-autofill="true"
                 value={formData.adresseProfessionnelle}
                 onChange={handleChange}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 placeholder="Commencez à taper votre adresse..."
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
                   errors.adresseProfessionnelle ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
               {errors.adresseProfessionnelle && <p className="mt-1 text-sm text-red-600">{errors.adresseProfessionnelle}</p>}
+
+              {/* Suggestions dropdown */}
+              {showSuggestions && addressSuggestions.length > 0 && (
+                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {addressSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => selectAddress(suggestion)}
+                      className="w-full text-left px-4 py-3 hover:bg-primary-50 transition-colors border-b border-gray-100 last:border-b-0"
+                    >
+                      <div className="flex items-start gap-2">
+                        <svg className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900">{suggestion.place_name}</p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
