@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
       module1: [],
       module2: [],
       module3: [],
+      module4: [],
       moduleProthesiste: [],
     }
 
@@ -32,14 +33,16 @@ export async function GET(request: NextRequest) {
       const data = doc.data()
       const moduleType = data.module as string
 
-      if (modulesByType[moduleType]) {
-        modulesByType[moduleType].push({
-          id: doc.id,
-          date: data.date,
-          location: data.location,
-          availablePlaces: data.maxPlaces - data.currentRegistrations,
-        })
+      if (!modulesByType[moduleType]) {
+        modulesByType[moduleType] = []
       }
+
+      modulesByType[moduleType].push({
+        id: doc.id,
+        date: data.date,
+        location: data.location,
+        availablePlaces: data.maxPlaces - (data.currentRegistrations || 0),
+      })
     })
 
     return NextResponse.json({ modules: modulesByType })

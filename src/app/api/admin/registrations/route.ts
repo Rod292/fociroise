@@ -19,10 +19,16 @@ export async function GET(request: NextRequest) {
     }
 
     const snapshot = await query.get()
-    let registrations: Registration[] = []
+    let registrations: any[] = []
 
     snapshot.forEach((doc) => {
-      registrations.push({ id: doc.id, ...doc.data() } as Registration)
+      const data = doc.data()
+      registrations.push({
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+      })
     })
 
     // Filtrer par date de module si spécifié
@@ -32,6 +38,7 @@ export async function GET(request: NextRequest) {
           reg.module1 === moduleDate ||
           reg.module2 === moduleDate ||
           reg.module3 === moduleDate ||
+          reg.module4 === moduleDate ||
           reg.moduleProthesiste === moduleDate
       )
     }

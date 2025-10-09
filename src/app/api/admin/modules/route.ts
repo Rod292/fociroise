@@ -23,10 +23,16 @@ export async function GET(request: NextRequest) {
     }
 
     const snapshot = await query.get()
-    const modules: ModuleDate[] = []
+    const modules: any[] = []
 
     snapshot.forEach((doc) => {
-      modules.push({ id: doc.id, ...doc.data() } as ModuleDate)
+      const data = doc.data()
+      modules.push({
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+      })
     })
 
     return NextResponse.json({ modules })
