@@ -10,17 +10,42 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const location = searchParams.get('location') // 'Brest' ou 'Guérande'
 
+    // Requête simple sans orderBy pour éviter les index composites
     let query = firebase.db
       .collection('moduleDates')
-      .where('isComplete', '==', false) // Seulement les modules non complets
-      .orderBy('year')
-      .orderBy('module')
+      .where('isComplete', '==', false) as any // Seulement les modules non complets
 
     if (location) {
-      query = query.where('location', '==', location) as any
+      query = query.where('location', '==', location)
     }
 
     const snapshot = await query.get()
+    const allModules: any[] = []
+
+    snapshot.forEach((doc: any) => {
+      const data = doc.data()
+      allModules.push({
+        id: doc.id,
+        date: data.date,
+        location: data.location,
+        module: data.module,
+        year: data.year,
+        maxPlaces: data.maxPlaces,
+        currentRegistrations: data.currentRegistrations || 0,
+      })
+    })
+
+    // Tri côté serveur
+    allModules.sort((a, b) => {
+      if (b.year !== a.year) return b.year - a.year
+      if (a.module < b.module) return -1
+      if (a.module > b.module) return 1
+      if (a.location === 'Brest' && b.location === 'Guérande') return -1
+      if (a.location === 'Guérande' && b.location === 'Brest') return 1
+      return a.date.localeCompare(b.date, 'fr-FR')
+    })
+
+    // Grouper par type de module
     const modulesByType: Record<string, any[]> = {
       module1: [],
       module2: [],
@@ -29,19 +54,18 @@ export async function GET(request: NextRequest) {
       moduleProthesiste: [],
     }
 
-    snapshot.forEach((doc) => {
-      const data = doc.data()
-      const moduleType = data.module as string
+    allModules.forEach((module) => {
+      const moduleType = module.module as string
 
       if (!modulesByType[moduleType]) {
         modulesByType[moduleType] = []
       }
 
       modulesByType[moduleType].push({
-        id: doc.id,
-        date: data.date,
-        location: data.location,
-        availablePlaces: data.maxPlaces - (data.currentRegistrations || 0),
+        id: module.id,
+        date: module.date,
+        location: module.location,
+        availablePlaces: module.maxPlaces - module.currentRegistrations,
       })
     })
 
