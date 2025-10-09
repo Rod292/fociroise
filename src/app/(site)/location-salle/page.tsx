@@ -1,31 +1,143 @@
-import type { Metadata } from 'next'
+'use client'
+
+import Image from 'next/image'
 import { contactInfo } from '@/config/navigation'
+import { useState, useEffect } from 'react'
 
-export const revalidate = 3600
-
-export const metadata: Metadata = {
-  title: 'Location de salle de réunion à Brest',
-  description: 'Louez une salle de réunion en hyper centre ville de Brest. Salle équipée pour 20 personnes avec TV 105", visioconférence, terrasse vue mer.',
-}
+const images = [
+  '/images/sallereunionfociroise.jpg',
+  '/images/sallereunionfociroise-2.jpg',
+  '/images/sallereunionfociroise-3.jpg',
+  '/images/location-1.jpg',
+  '/images/sallereunionfociroise-5.jpg',
+  '/images/sallereunionfociroise-6.jpg',
+  '/images/sallereunionfociroise-7.jpg',
+  '/images/sallereunionfociroise-8.jpg',
+  '/images/sallereunionfociroise-9.jpg',
+  '/images/sallereunionfociroise-10.jpg',
+  '/images/sallereunionfociroise-11.jpg',
+  '/images/sallereunionfociroise-12.jpg',
+  '/images/sallereunionfociroise-13.jpg',
+]
 
 export default function LocationSallePage() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+  }
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length)
+  }
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'Location de salle de réunion à Brest',
+    description: 'Salle de réunion équipée pour 20 personnes en hyper centre de Brest avec TV 105", visioconférence, terrasse vue mer',
+    image: images.map(img => `https://fociroise.fr${img}`),
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Demi-journée',
+        price: '265',
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+      },
+      {
+        '@type': 'Offer',
+        name: 'Journée complète',
+        price: '335',
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+      },
+    ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      reviewCount: '12',
+    },
+  }
+
   return (
     <div className="bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="container-custom section-spacing">
         <div className="max-w-5xl mx-auto">
           {/* En-tête */}
           <div className="text-center mb-12">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              Louez une salle de réunion en hyper centre ville de Brest
+              Location salle de réunion Brest - FOC Iroise
             </h1>
             <p className="text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
-              En hyper centre ville de Brest, FOC Iroise Brest met à la disposition des professionnels son espace de travail
+              En hyper centre ville de Brest, <strong>FOC Iroise</strong> met à disposition une salle de réunion professionnelle équipée
             </p>
           </div>
 
-          {/* Photo placeholder */}
-          <div className="mb-12 bg-gray-100 rounded-xl h-96 flex items-center justify-center border border-gray-200">
-            <p className="text-gray-500 italic">Photo de la salle à venir</p>
+          {/* Diaporama de la salle */}
+          <div className="mb-12 relative">
+            <div className="relative aspect-video rounded-xl overflow-hidden border border-gray-200 shadow-lg">
+              <Image
+                src={images[currentIndex]}
+                alt={`Salle de réunion FOC Iroise Brest - Photo ${currentIndex + 1}`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 1024px"
+                priority={currentIndex === 0}
+              />
+
+              {/* Boutons de navigation */}
+              <button
+                onClick={goToPrevious}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                aria-label="Photo précédente"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <button
+                onClick={goToNext}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all hover:scale-110"
+                aria-label="Photo suivante"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              {/* Indicateurs */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`h-2 rounded-full transition-all ${
+                      index === currentIndex
+                        ? 'w-8 bg-white'
+                        : 'w-2 bg-white/50 hover:bg-white/75'
+                    }`}
+                    aria-label={`Aller à la photo ${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              {/* Compteur */}
+              <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {currentIndex + 1} / {images.length}
+              </div>
+            </div>
           </div>
 
           {/* Présentation */}
