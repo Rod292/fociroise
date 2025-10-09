@@ -1,5 +1,7 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { adminDb } from '@/lib/firebase-admin'
+import { Registration } from '@/types/admin'
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
@@ -19,12 +21,62 @@ export async function POST(request: Request) {
       module2,
       module3,
       moduleProthesiste,
+      isGuerande,
       message,
     } = body
 
+    // Sauvegarder l'inscription dans Firestore
+    const registration: Omit<Registration, 'id'> = {
+      nom,
+      prenom,
+      email,
+      telephone,
+      adresseProfessionnelle,
+      codePostal,
+      ville,
+      pays,
+      module1,
+      module2,
+      module3,
+      moduleProthesiste,
+      isGuerande: isGuerande || false,
+      message,
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      emailSent: false,
+    }
+
+    const docRef = await adminDb.collection('registrations').add(registration)
+    console.log('Registration saved to Firestore:', docRef.id)
+
+    // Mettre à jour le nombre d'inscriptions pour chaque module
+    const updateModuleRegistrations = async (moduleDate: string) => {
+      if (!moduleDate) return
+
+      const modulesSnapshot = await adminDb
+        .collection('moduleDates')
+        .where('date', '==', moduleDate)
+        .get()
+
+      modulesSnapshot.forEach(async (doc) => {
+        await doc.ref.update({
+          currentRegistrations: (doc.data().currentRegistrations || 0) + 1,
+          updatedAt: new Date(),
+        })
+      })
+    }
+
+    await Promise.all([
+      updateModuleRegistrations(module1),
+      updateModuleRegistrations(module2),
+      updateModuleRegistrations(module3),
+      updateModuleRegistrations(moduleProthesiste),
+    ])
+
     // Check if Resend is configured
     if (!resend) {
-      console.log('Resend API key not configured. Logging form submission:', body)
+      console.log('Resend API key not configured. Registration saved but no email sent.')
       return NextResponse.json({ success: true, message: 'Form submitted (email service not configured)' })
     }
 
@@ -326,11 +378,17 @@ export async function POST(request: Request) {
       `,
     })
 
-    return NextResponse.json({ success: true })
+    // Marquer l'email comme envoyé
+    await adminDb.collection('registrations').doc(docRef.id).update({
+      emailSent: true,
+      updatedAt: new Date(),
+    })
+
+    return NextResponse.json({ success: true, registrationId: docRef.id })
   } catch (error) {
-    console.error('Error sending email:', error)
+    console.error('Error processing registration:', error)
     return NextResponse.json(
-      { error: 'Failed to send email' },
+      { error: 'Failed to process registration' },
       { status: 500 }
     )
   }
