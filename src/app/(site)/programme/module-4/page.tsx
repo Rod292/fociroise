@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const revalidate = 3600
 
@@ -116,6 +117,33 @@ export default function Module4Page() {
                     Discussion des cas cliniques des participants
                   </h3>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Photos de diplômes */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Galerie
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-lg">
+                <Image
+                  src="/images/Module-4Diplomes.jpg"
+                  alt="Remise de diplômes Module 4"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-lg">
+                <Image
+                  src="/images/Module-4-Diplomes2.JPG"
+                  alt="Remise de diplômes Module 4"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
               </div>
             </div>
           </div>
