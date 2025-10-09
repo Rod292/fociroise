@@ -283,9 +283,9 @@ export default function InscriptionFormWizard() {
     <div>
       {/* Progress indicator */}
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center mb-2">
           {[1, 2, 3].map((s) => (
-            <div key={s} className="flex items-center flex-1">
+            <div key={s} className={`flex items-center ${s < 3 ? 'flex-1' : ''}`}>
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors ${
                 s <= step ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-500'
               }`}>
