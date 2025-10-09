@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { contactInfo } from '@/config/navigation'
 import InscriptionFormWizard from '@/components/InscriptionFormWizard'
+import ModuleDatesDisplay from '@/components/ModuleDatesDisplay'
 
-export const revalidate = 3600
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: 'Inscription',
@@ -61,147 +62,8 @@ export default function InscriptionPage() {
             <InscriptionFormWizard />
           </div>
 
-          {/* Dates 2026 */}
-          <div className="bg-white border border-gray-200 rounded-xl p-8 mb-12 shadow-sm">
-            <div className="flex items-center gap-3 mb-8">
-              <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <h2 className="text-3xl font-bold text-gray-900">
-                Dates 2026
-              </h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg p-6 border border-primary-200">
-                <h3 className="text-xl font-bold text-primary-900 mb-4 flex items-center gap-2">
-                  <span className="flex items-center justify-center w-8 h-8 bg-primary-600 text-white rounded-full text-sm font-bold">1</span>
-                  Module 1
-                </h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    16 & 17 janvier
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    30 & 31 janvier
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    13 & 14 février
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg p-6 border border-primary-200">
-                <h3 className="text-xl font-bold text-primary-900 mb-4 flex items-center gap-2">
-                  <span className="flex items-center justify-center w-8 h-8 bg-primary-600 text-white rounded-full text-sm font-bold">2</span>
-                  Module 2
-                </h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    13 & 14 mars
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    27 & 28 mars
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    10 & 11 avril
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg p-6 border border-primary-200">
-                <h3 className="text-xl font-bold text-primary-900 mb-4 flex items-center gap-2">
-                  <span className="flex items-center justify-center w-8 h-8 bg-primary-600 text-white rounded-full text-sm font-bold">3</span>
-                  Module 3
-                </h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    11 & 12 septembre
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    25 & 26 septembre
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    9 & 10 octobre
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="flex items-center justify-center w-8 h-8 bg-gray-600 text-white rounded-full text-sm font-bold">4</span>
-                  Module 4
-                </h3>
-                <p className="text-gray-600 italic">Sur demande</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200 md:col-span-2 lg:col-span-2">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 008 10.586V5L7 4z" />
-                  </svg>
-                  Module Prothésiste
-                </h3>
-                <p className="text-gray-700">27 & 28 février</p>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl p-6">
-              <h3 className="text-lg font-bold text-amber-900 mb-3 flex items-center gap-2">
-                <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Sessions exceptionnelles 2026 à Guérande (44)
-              </h3>
-              <div className="bg-amber-100 border border-amber-300 rounded-lg p-4 mb-4">
-                <p className="text-sm text-amber-900 font-medium">
-                  ⚠️ Il est impossible de panacher ces modules avec les sessions brestoises
-                </p>
-              </div>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-white rounded-lg p-4 border border-amber-200">
-                  <p className="font-semibold text-amber-900 mb-1">Module 1</p>
-                  <p className="text-gray-700">24 & 25 avril</p>
-                </div>
-                <div className="bg-white rounded-lg p-4 border border-amber-200">
-                  <p className="font-semibold text-amber-900 mb-1">Module 2</p>
-                  <p className="text-gray-700">12 & 13 juin</p>
-                </div>
-                <div className="bg-white rounded-lg p-4 border border-amber-200">
-                  <p className="font-semibold text-amber-900 mb-1">Module 3</p>
-                  <p className="text-gray-700">23 & 24 octobre</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Dates 2026 - Dynamique */}
+          <ModuleDatesDisplay />
 
           {/* Nous contacter */}
           <div className="bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-xl p-8 mb-12 shadow-lg">
