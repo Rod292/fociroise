@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { CTAButtonGroup } from '@/components/CTAButtons'
 import AlertBanner from '@/components/AlertBanner'
+import AnimatedLogo from '@/components/AnimatedLogo'
 import type { Metadata } from 'next'
 
 // ISR: revalidation toutes les heures (3600s)
@@ -48,17 +48,8 @@ export default function HomePage() {
 
             {/* Logo + Titre + Stats en disposition horizontale */}
             <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 mb-12">
-              {/* Logo */}
-              <div className="flex-shrink-0 bg-white rounded-full p-8 shadow-lg">
-                <Image
-                  src="/images/Logo+texte.png"
-                  alt="FOC Iroise"
-                  width={350}
-                  height={117}
-                  className="h-40 lg:h-52 w-auto"
-                  priority
-                />
-              </div>
+              {/* Logo animé */}
+              <AnimatedLogo />
 
               {/* Titre + Stats */}
               <div className="text-center lg:text-left">
