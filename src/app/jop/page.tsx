@@ -353,12 +353,68 @@ function ModulesTab({ modules, onRefresh, onToggleComplete, onDelete, onShowAdd 
               </h3>
             </div>
             <div className="divide-y divide-gray-200">
-              {mods.map((mod: ModuleDate) => (
+              {/* Modules Brest */}
+              {mods.filter((mod: ModuleDate) => mod.location === 'Brest').map((mod: ModuleDate) => (
                 <div key={mod.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
                       <span className="font-medium text-gray-900">{mod.date}</span>
                       <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                        📍 {mod.location}
+                      </span>
+                      {mod.isComplete && (
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                          ✓ Complet
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      <span className={mod.currentRegistrations >= mod.maxPlaces ? 'text-red-600 font-semibold' : ''}>
+                        {mod.currentRegistrations} / {mod.maxPlaces} places
+                      </span>
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onToggleComplete(mod)}
+                      className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                        mod.isComplete
+                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                          : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                      }`}
+                    >
+                      {mod.isComplete ? '🔓 Réouvrir' : '🔒 Marquer complet'}
+                    </button>
+                    <button
+                      onClick={() => onDelete(mod.id)}
+                      className="px-4 py-2 rounded-lg font-medium text-sm bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                    >
+                      🗑️ Supprimer
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {/* Séparateur Guérande si présent */}
+              {mods.some((mod: ModuleDate) => mod.location === 'Guérande') && mods.some((mod: ModuleDate) => mod.location === 'Brest') && (
+                <div className="px-6 py-3 bg-gradient-to-r from-amber-50 to-orange-50 border-y-2 border-amber-300">
+                  <p className="text-sm font-semibold text-amber-900 flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Sessions exceptionnelles à Guérande
+                  </p>
+                </div>
+              )}
+
+              {/* Modules Guérande */}
+              {mods.filter((mod: ModuleDate) => mod.location === 'Guérande').map((mod: ModuleDate) => (
+                <div key={mod.id} className="px-6 py-4 flex items-center justify-between hover:bg-amber-50 transition-colors">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-gray-900">{mod.date}</span>
+                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800">
                         📍 {mod.location}
                       </span>
                       {mod.isComplete && (

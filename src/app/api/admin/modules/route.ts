@@ -43,7 +43,11 @@ export async function GET(request: NextRequest) {
       // Puis par module (asc)
       if (a.module < b.module) return -1
       if (a.module > b.module) return 1
-      return 0
+      // Ensuite par localisation (Brest avant Guérande)
+      if (a.location === 'Brest' && b.location === 'Guérande') return -1
+      if (a.location === 'Guérande' && b.location === 'Brest') return 1
+      // Enfin tri chronologique par date
+      return a.date.localeCompare(b.date, 'fr-FR')
     })
 
     return NextResponse.json({ modules })
