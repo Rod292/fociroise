@@ -4,27 +4,27 @@ import { useState, useEffect } from 'react'
 
 const MODULE_DATES_2026 = {
   module1: [
-    { date: '16 & 17 janvier 2026', id: 'm1-jan16' },
-    { date: '30 & 31 janvier 2026', id: 'm1-jan30' },
-    { date: '13 & 14 février 2026', id: 'm1-feb13' },
+    { date: '16 & 17 janvier', id: 'm1-jan16' },
+    { date: '30 & 31 janvier', id: 'm1-jan30' },
+    { date: '13 & 14 février', id: 'm1-feb13' },
   ],
   module2: [
-    { date: '13 & 14 mars 2026', id: 'm2-mar13' },
-    { date: '27 & 28 mars 2026', id: 'm2-mar27' },
-    { date: '10 & 11 avril 2026', id: 'm2-apr10' },
+    { date: '13 & 14 mars', id: 'm2-mar13' },
+    { date: '27 & 28 mars', id: 'm2-mar27' },
+    { date: '10 & 11 avril', id: 'm2-apr10' },
   ],
   module3: [
-    { date: '11 & 12 septembre 2026', id: 'm3-sep11' },
-    { date: '25 & 26 septembre 2026', id: 'm3-sep25' },
-    { date: '9 & 10 octobre 2026', id: 'm3-oct9' },
+    { date: '11 & 12 septembre', id: 'm3-sep11' },
+    { date: '25 & 26 septembre', id: 'm3-sep25' },
+    { date: '9 & 10 octobre', id: 'm3-oct9' },
   ],
   moduleProthesiste: [
-    { date: '27 & 28 février 2026', id: 'mp-feb27' },
+    { date: '27 & 28 février', id: 'mp-feb27' },
   ],
   guerande: [
-    { date: 'Module 1: 24 & 25 avril 2026', id: 'g-m1-apr24' },
-    { date: 'Module 2: 12 & 13 juin 2026', id: 'g-m2-jun12' },
-    { date: 'Module 3: 23 & 24 octobre 2026', id: 'g-m3-oct23' },
+    { date: 'Module 1: 24 & 25 avril', id: 'g-m1-apr24' },
+    { date: 'Module 2: 12 & 13 juin', id: 'g-m2-jun12' },
+    { date: 'Module 3: 23 & 24 octobre', id: 'g-m3-oct23' },
   ],
 }
 
@@ -196,9 +196,9 @@ export default function InscriptionFormWizard() {
       setFormData({
         ...formData,
         isGuerande: true,
-        module1: 'Module 1: 24 & 25 avril 2026',
-        module2: 'Module 2: 12 & 13 juin 2026',
-        module3: 'Module 3: 23 & 24 octobre 2026',
+        module1: 'Module 1: 24 & 25 avril',
+        module2: 'Module 2: 12 & 13 juin',
+        module3: 'Module 3: 23 & 24 octobre',
       })
     } else {
       // Switch to Brest
@@ -683,19 +683,19 @@ export default function InscriptionFormWizard() {
                     <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span className="font-medium">Module 1: 24 & 25 avril 2026</span>
+                    <span className="font-medium">Module 1: 24 & 25 avril</span>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
                     <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span className="font-medium">Module 2: 12 & 13 juin 2026</span>
+                    <span className="font-medium">Module 2: 12 & 13 juin</span>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
                     <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span className="font-medium">Module 3: 23 & 24 octobre 2026</span>
+                    <span className="font-medium">Module 3: 23 & 24 octobre</span>
                   </div>
                 </div>
               </div>
