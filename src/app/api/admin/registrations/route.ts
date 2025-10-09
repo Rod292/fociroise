@@ -43,6 +43,68 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// POST - Créer une inscription manuellement
+export async function POST(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
+  try {
+    const data = await request.json()
+
+    const registration: Omit<Registration, 'id'> = {
+      nom: data.nom,
+      prenom: data.prenom,
+      email: data.email,
+      telephone: data.telephone,
+      adresseProfessionnelle: data.adresseProfessionnelle,
+      codePostal: data.codePostal,
+      ville: data.ville,
+      pays: data.pays,
+      module1: data.module1,
+      module2: data.module2,
+      module3: data.module3,
+      moduleProthesiste: data.moduleProthesiste,
+      isGuerande: data.isGuerande || false,
+      message: data.message || '',
+      status: data.status || 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      emailSent: data.emailSent || false,
+    }
+
+    const docRef = await firebase.db.collection('registrations').add(registration)
+
+    // Mettre à jour le nombre d'inscriptions pour chaque module
+    const updateModuleRegistrations = async (moduleDate: string) => {
+      if (!moduleDate) return
+
+      const modulesSnapshot = await firebase.db
+        .collection('moduleDates')
+        .where('date', '==', moduleDate)
+        .get()
+
+      modulesSnapshot.forEach(async (doc) => {
+        await doc.ref.update({
+          currentRegistrations: (doc.data().currentRegistrations || 0) + 1,
+          updatedAt: new Date(),
+        })
+      })
+    }
+
+    await Promise.all([
+      updateModuleRegistrations(data.module1),
+      updateModuleRegistrations(data.module2),
+      updateModuleRegistrations(data.module3),
+      updateModuleRegistrations(data.moduleProthesiste),
+    ])
+
+    return NextResponse.json({ success: true, id: docRef.id })
+  } catch (error) {
+    console.error('Error creating registration:', error)
+    return NextResponse.json({ error: 'Failed to create registration' }, { status: 500 })
+  }
+}
+
 // PATCH - Mettre à jour une inscription
 export async function PATCH(request: NextRequest) {
   const firebase = checkFirebaseAdmin()

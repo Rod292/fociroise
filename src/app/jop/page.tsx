@@ -19,6 +19,7 @@ export default function AdminPage() {
   // Modules state
   const [modules, setModules] = useState<ModuleDate[]>([])
   const [showAddModule, setShowAddModule] = useState(false)
+  const [showAddRegistration, setShowAddRegistration] = useState(false)
 
   // Registrations state
   const [registrations, setRegistrations] = useState<Registration[]>([])
@@ -111,6 +112,19 @@ export default function AdminPage() {
       fetchModules()
     } catch (err) {
       console.error('Error updating module:', err)
+    }
+  }
+
+  const deleteModule = async (moduleId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce module ? Cette action est irréversible.')) return
+
+    try {
+      await fetch(`/api/admin/modules?id=${moduleId}`, {
+        method: 'DELETE',
+      })
+      fetchModules()
+    } catch (err) {
+      console.error('Error deleting module:', err)
     }
   }
 
@@ -243,7 +257,7 @@ export default function AdminPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              👥 Inscriptions
+              👥 Inscriptions ({registrations.length})
             </button>
           </nav>
         </div>
@@ -256,6 +270,8 @@ export default function AdminPage() {
             modules={modules}
             onRefresh={fetchModules}
             onToggleComplete={toggleModuleComplete}
+            onDelete={deleteModule}
+            onShowAdd={() => setShowAddModule(true)}
           />
         ) : (
           <RegistrationsTab
@@ -264,15 +280,39 @@ export default function AdminPage() {
             onStatusChange={setSelectedStatus}
             onUpdateStatus={updateRegistrationStatus}
             onDelete={deleteRegistration}
+            onShowAdd={() => setShowAddRegistration(true)}
           />
         )}
       </div>
+
+      {/* Add Module Modal */}
+      {showAddModule && (
+        <AddModuleModal
+          onClose={() => setShowAddModule(false)}
+          onSuccess={() => {
+            setShowAddModule(false)
+            fetchModules()
+          }}
+        />
+      )}
+
+      {/* Add Registration Modal */}
+      {showAddRegistration && (
+        <AddRegistrationModal
+          modules={modules}
+          onClose={() => setShowAddRegistration(false)}
+          onSuccess={() => {
+            setShowAddRegistration(false)
+            fetchRegistrations()
+          }}
+        />
+      )}
     </div>
   )
 }
 
 // Modules Tab Component
-function ModulesTab({ modules, onRefresh, onToggleComplete }: any) {
+function ModulesTab({ modules, onRefresh, onToggleComplete, onDelete, onShowAdd }: any) {
   const groupedModules = modules.reduce((acc: any, module: ModuleDate) => {
     const key = `${module.year}-${module.module}`
     if (!acc[key]) acc[key] = []
@@ -280,15 +320,25 @@ function ModulesTab({ modules, onRefresh, onToggleComplete }: any) {
     return acc
   }, {})
 
+  const moduleLabels: Record<string, string> = {
+    module1: 'Module 1',
+    module2: 'Module 2',
+    module3: 'Module 3',
+    moduleProthesiste: 'Module Prothésiste (Facultatif)'
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">Modules et dates</h2>
         <button
-          onClick={onRefresh}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+          onClick={onShowAdd}
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors flex items-center gap-2"
         >
-          ➕ Ajouter un module
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Ajouter un module
         </button>
       </div>
 
@@ -298,12 +348,12 @@ function ModulesTab({ modules, onRefresh, onToggleComplete }: any) {
           <div key={key} className="bg-white rounded-lg shadow overflow-hidden">
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">
-                {module.replace('module', 'Module ')} - {year}
+                {moduleLabels[module] || module} - {year}
               </h3>
             </div>
             <div className="divide-y divide-gray-200">
               {mods.map((mod: ModuleDate) => (
-                <div key={mod.id} className="px-6 py-4 flex items-center justify-between">
+                <div key={mod.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
                       <span className="font-medium text-gray-900">{mod.date}</span>
@@ -317,19 +367,29 @@ function ModulesTab({ modules, onRefresh, onToggleComplete }: any) {
                       )}
                     </div>
                     <p className="text-sm text-gray-600 mt-1">
-                      {mod.currentRegistrations} / {mod.maxPlaces} places
+                      <span className={mod.currentRegistrations >= mod.maxPlaces ? 'text-red-600 font-semibold' : ''}>
+                        {mod.currentRegistrations} / {mod.maxPlaces} places
+                      </span>
                     </p>
                   </div>
-                  <button
-                    onClick={() => onToggleComplete(mod)}
-                    className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-                      mod.isComplete
-                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {mod.isComplete ? 'Réouvrir' : 'Marquer complet'}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onToggleComplete(mod)}
+                      className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                        mod.isComplete
+                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                          : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                      }`}
+                    >
+                      {mod.isComplete ? '🔓 Réouvrir' : '🔒 Marquer complet'}
+                    </button>
+                    <button
+                      onClick={() => onDelete(mod.id)}
+                      className="px-4 py-2 rounded-lg font-medium text-sm bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                    >
+                      🗑️ Supprimer
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -338,8 +398,15 @@ function ModulesTab({ modules, onRefresh, onToggleComplete }: any) {
       })}
 
       {modules.length === 0 && (
-        <div className="bg-white rounded-lg shadow p-8 text-center">
-          <p className="text-gray-500">Aucun module trouvé. Ajoutez votre premier module.</p>
+        <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="text-6xl mb-4">📅</div>
+          <p className="text-gray-500 text-lg mb-4">Aucun module trouvé</p>
+          <button
+            onClick={onShowAdd}
+            className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+          >
+            Ajouter votre premier module
+          </button>
         </div>
       )}
     </div>
@@ -347,26 +414,38 @@ function ModulesTab({ modules, onRefresh, onToggleComplete }: any) {
 }
 
 // Registrations Tab Component
-function RegistrationsTab({ registrations, selectedStatus, onStatusChange, onUpdateStatus, onDelete }: any) {
+function RegistrationsTab({ registrations, selectedStatus, onStatusChange, onUpdateStatus, onDelete, onShowAdd }: any) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">Inscriptions</h2>
         <div className="flex gap-2">
-          {(['all', 'pending', 'confirmed', 'cancelled'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => onStatusChange(status)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                selectedStatus === status
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {status === 'all' ? 'Toutes' : status === 'pending' ? 'En attente' : status === 'confirmed' ? 'Confirmées' : 'Annulées'}
-            </button>
-          ))}
+          <button
+            onClick={onShowAdd}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Ajouter manuellement
+          </button>
         </div>
+      </div>
+
+      <div className="flex gap-2">
+        {(['all', 'pending', 'confirmed', 'cancelled'] as const).map((status) => (
+          <button
+            key={status}
+            onClick={() => onStatusChange(status)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              selectedStatus === status
+                ? 'bg-primary-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {status === 'all' ? 'Toutes' : status === 'pending' ? 'En attente' : status === 'confirmed' ? 'Confirmées' : 'Annulées'}
+          </button>
+        ))}
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -385,7 +464,7 @@ function RegistrationsTab({ registrations, selectedStatus, onStatusChange, onUpd
               <tr key={reg.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{reg.prenom} {reg.nom}</div>
-                  <div className="text-sm text-gray-500">{reg.ville}</div>
+                  <div className="text-sm text-gray-500">{reg.ville} - {reg.isGuerande ? 'Guérande' : 'Brest'}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">{reg.email}</div>
@@ -393,17 +472,17 @@ function RegistrationsTab({ registrations, selectedStatus, onStatusChange, onUpd
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm text-gray-900 space-y-1">
-                    {reg.module1 && <div>M1: {reg.module1}</div>}
-                    {reg.module2 && <div>M2: {reg.module2}</div>}
-                    {reg.module3 && <div>M3: {reg.module3}</div>}
-                    {reg.moduleProthesiste && <div className="text-amber-600">MP: {reg.moduleProthesiste}</div>}
+                    {reg.module1 && <div>• M1: {reg.module1}</div>}
+                    {reg.module2 && <div>• M2: {reg.module2}</div>}
+                    {reg.module3 && <div>• M3: {reg.module3}</div>}
+                    {reg.moduleProthesiste && <div className="text-amber-600">• MP: {reg.moduleProthesiste}</div>}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <select
                     value={reg.status}
                     onChange={(e) => onUpdateStatus(reg.id, e.target.value)}
-                    className="text-sm border-gray-300 rounded-md"
+                    className="text-sm border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                   >
                     <option value="pending">En attente</option>
                     <option value="confirmed">Confirmée</option>
@@ -424,10 +503,408 @@ function RegistrationsTab({ registrations, selectedStatus, onStatusChange, onUpd
         </table>
 
         {registrations.length === 0 && (
-          <div className="p-8 text-center text-gray-500">
-            Aucune inscription trouvée.
+          <div className="p-12 text-center text-gray-500">
+            <div className="text-6xl mb-4">👥</div>
+            <p className="text-lg">Aucune inscription trouvée</p>
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+// Add Module Modal Component
+function AddModuleModal({ onClose, onSuccess }: any) {
+  const [formData, setFormData] = useState({
+    module: 'module1',
+    date: '',
+    location: 'Brest',
+    year: 2026,
+    maxPlaces: 14
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    try {
+      const res = await fetch('/api/admin/modules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      if (res.ok) {
+        onSuccess()
+      } else {
+        alert('Erreur lors de l\'ajout du module')
+      }
+    } catch (err) {
+      console.error('Error adding module:', err)
+      alert('Erreur lors de l\'ajout du module')
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Ajouter un module</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Module</label>
+            <select
+              value={formData.module}
+              onChange={(e) => setFormData({ ...formData, module: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              required
+            >
+              <option value="module1">Module 1</option>
+              <option value="module2">Module 2</option>
+              <option value="module3">Module 3</option>
+              <option value="moduleProthesiste">Module Prothésiste</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Date (ex: "15-16 février 2026")</label>
+            <input
+              type="text"
+              value={formData.date}
+              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              placeholder="15-16 février 2026"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Lieu</label>
+            <select
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              required
+            >
+              <option value="Brest">Brest</option>
+              <option value="Guérande">Guérande</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Année</label>
+            <input
+              type="number"
+              value={formData.year}
+              onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Places max</label>
+            <input
+              type="number"
+              value={formData.maxPlaces}
+              onChange={(e) => setFormData({ ...formData, maxPlaces: parseInt(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+            >
+              Ajouter
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+// Add Registration Modal Component
+function AddRegistrationModal({ modules, onClose, onSuccess }: any) {
+  const [formData, setFormData] = useState({
+    nom: '',
+    prenom: '',
+    email: '',
+    telephone: '',
+    adresseProfessionnelle: '',
+    codePostal: '',
+    ville: '',
+    pays: 'France',
+    module1: '',
+    module2: '',
+    module3: '',
+    moduleProthesiste: '',
+    isGuerande: false,
+    message: '',
+    status: 'confirmed' as 'pending' | 'confirmed' | 'cancelled',
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    try {
+      // First create the registration in Firestore via API
+      const res = await fetch('/api/admin/registrations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          emailSent: false,
+        }),
+      })
+
+      if (res.ok) {
+        onSuccess()
+      } else {
+        alert('Erreur lors de l\'ajout de l\'inscription')
+      }
+    } catch (err) {
+      console.error('Error adding registration:', err)
+      alert('Erreur lors de l\'ajout de l\'inscription')
+    }
+  }
+
+  const availableModules = modules.filter((m: ModuleDate) =>
+    !m.isComplete && m.location === (formData.isGuerande ? 'Guérande' : 'Brest')
+  )
+
+  const module1Options = availableModules.filter((m: ModuleDate) => m.module === 'module1')
+  const module2Options = availableModules.filter((m: ModuleDate) => m.module === 'module2')
+  const module3Options = availableModules.filter((m: ModuleDate) => m.module === 'module3')
+  const moduleProthesisteOptions = availableModules.filter((m: ModuleDate) => m.module === 'moduleProthesiste')
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 my-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Ajouter une inscription manuellement</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Informations personnelles */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nom *</label>
+              <input
+                type="text"
+                value={formData.nom}
+                onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Prénom *</label>
+              <input
+                type="text"
+                value={formData.prenom}
+                onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone *</label>
+              <input
+                type="tel"
+                value={formData.telephone}
+                onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Adresse */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Adresse professionnelle *</label>
+            <input
+              type="text"
+              value={formData.adresseProfessionnelle}
+              onChange={(e) => setFormData({ ...formData, adresseProfessionnelle: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Code postal *</label>
+              <input
+                type="text"
+                value={formData.codePostal}
+                onChange={(e) => setFormData({ ...formData, codePostal: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Ville *</label>
+              <input
+                type="text"
+                value={formData.ville}
+                onChange={(e) => setFormData({ ...formData, ville: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pays *</label>
+              <input
+                type="text"
+                value={formData.pays}
+                onChange={(e) => setFormData({ ...formData, pays: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Localisation */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Localisation</label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, isGuerande: false, module1: '', module2: '', module3: '', moduleProthesiste: '' })}
+                className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                  !formData.isGuerande ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
+                }`}
+              >
+                📍 Brest
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, isGuerande: true, module1: '', module2: '', module3: '', moduleProthesiste: '' })}
+                className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                  formData.isGuerande ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700'
+                }`}
+              >
+                📍 Guérande
+              </button>
+            </div>
+          </div>
+
+          {/* Modules */}
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Module 1 *</label>
+              <select
+                value={formData.module1}
+                onChange={(e) => setFormData({ ...formData, module1: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              >
+                <option value="">Sélectionner une date</option>
+                {module1Options.map((m: ModuleDate) => (
+                  <option key={m.id} value={m.date}>{m.date} ({m.maxPlaces - m.currentRegistrations} places)</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Module 2 *</label>
+              <select
+                value={formData.module2}
+                onChange={(e) => setFormData({ ...formData, module2: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              >
+                <option value="">Sélectionner une date</option>
+                {module2Options.map((m: ModuleDate) => (
+                  <option key={m.id} value={m.date}>{m.date} ({m.maxPlaces - m.currentRegistrations} places)</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Module 3 *</label>
+              <select
+                value={formData.module3}
+                onChange={(e) => setFormData({ ...formData, module3: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                required
+              >
+                <option value="">Sélectionner une date</option>
+                {module3Options.map((m: ModuleDate) => (
+                  <option key={m.id} value={m.date}>{m.date} ({m.maxPlaces - m.currentRegistrations} places)</option>
+                ))}
+              </select>
+            </div>
+
+            {moduleProthesisteOptions.length > 0 && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Module Prothésiste (facultatif)</label>
+                <select
+                  value={formData.moduleProthesiste}
+                  onChange={(e) => setFormData({ ...formData, moduleProthesiste: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="">Aucun</option>
+                  {moduleProthesisteOptions.map((m: ModuleDate) => (
+                    <option key={m.id} value={m.date}>{m.date} ({m.maxPlaces - m.currentRegistrations} places)</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="pending">En attente</option>
+              <option value="confirmed">Confirmée</option>
+              <option value="cancelled">Annulée</option>
+            </select>
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+            >
+              Ajouter l'inscription
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )
