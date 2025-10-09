@@ -26,53 +26,59 @@ export async function POST(request: Request) {
     } = body
 
     // Sauvegarder l'inscription dans Firestore
-    const registration: Omit<Registration, 'id'> = {
-      nom,
-      prenom,
-      email,
-      telephone,
-      adresseProfessionnelle,
-      codePostal,
-      ville,
-      pays,
-      module1,
-      module2,
-      module3,
-      moduleProthesiste,
-      isGuerande: isGuerande || false,
-      message,
-      status: 'pending',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      emailSent: false,
-    }
+    let docRef: any = null
 
-    const docRef = await adminDb.collection('registrations').add(registration)
-    console.log('Registration saved to Firestore:', docRef.id)
+    if (adminDb) {
+      const registration: Omit<Registration, 'id'> = {
+        nom,
+        prenom,
+        email,
+        telephone,
+        adresseProfessionnelle,
+        codePostal,
+        ville,
+        pays,
+        module1,
+        module2,
+        module3,
+        moduleProthesiste,
+        isGuerande: isGuerande || false,
+        message,
+        status: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        emailSent: false,
+      }
 
-    // Mettre à jour le nombre d'inscriptions pour chaque module
-    const updateModuleRegistrations = async (moduleDate: string) => {
-      if (!moduleDate) return
+      docRef = await adminDb.collection('registrations').add(registration)
+      console.log('Registration saved to Firestore:', docRef.id)
 
-      const modulesSnapshot = await adminDb
-        .collection('moduleDates')
-        .where('date', '==', moduleDate)
-        .get()
+      // Mettre à jour le nombre d'inscriptions pour chaque module
+      const updateModuleRegistrations = async (moduleDate: string) => {
+        if (!moduleDate || !adminDb) return
 
-      modulesSnapshot.forEach(async (doc) => {
-        await doc.ref.update({
-          currentRegistrations: (doc.data().currentRegistrations || 0) + 1,
-          updatedAt: new Date(),
+        const modulesSnapshot = await adminDb
+          .collection('moduleDates')
+          .where('date', '==', moduleDate)
+          .get()
+
+        modulesSnapshot.forEach(async (doc) => {
+          await doc.ref.update({
+            currentRegistrations: (doc.data().currentRegistrations || 0) + 1,
+            updatedAt: new Date(),
+          })
         })
-      })
-    }
+      }
 
-    await Promise.all([
-      updateModuleRegistrations(module1),
-      updateModuleRegistrations(module2),
-      updateModuleRegistrations(module3),
-      updateModuleRegistrations(moduleProthesiste),
-    ])
+      await Promise.all([
+        updateModuleRegistrations(module1),
+        updateModuleRegistrations(module2),
+        updateModuleRegistrations(module3),
+        updateModuleRegistrations(moduleProthesiste),
+      ])
+    } else {
+      console.warn('Firebase Admin not initialized, skipping Firestore operations')
+    }
 
     // Check if Resend is configured
     if (!resend) {
@@ -379,12 +385,14 @@ export async function POST(request: Request) {
     })
 
     // Marquer l'email comme envoyé
-    await adminDb.collection('registrations').doc(docRef.id).update({
-      emailSent: true,
-      updatedAt: new Date(),
-    })
+    if (adminDb && docRef) {
+      await adminDb.collection('registrations').doc(docRef.id).update({
+        emailSent: true,
+        updatedAt: new Date(),
+      })
+    }
 
-    return NextResponse.json({ success: true, registrationId: docRef.id })
+    return NextResponse.json({ success: true, registrationId: docRef?.id })
   } catch (error) {
     console.error('Error processing registration:', error)
     return NextResponse.json(

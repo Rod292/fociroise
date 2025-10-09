@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb } from '@/lib/firebase-admin'
+import { checkFirebaseAdmin } from '@/lib/firebase-admin-check'
 import { ModuleDate } from '@/types/admin'
 
 // GET - Récupérer tous les modules
 export async function GET(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const { searchParams } = new URL(request.url)
     const year = searchParams.get('year')
     const location = searchParams.get('location')
 
-    let query = adminDb.collection('moduleDates').orderBy('year', 'desc').orderBy('module')
+    let query = firebase.db.collection('moduleDates').orderBy('year', 'desc').orderBy('module')
 
     if (year) {
       query = query.where('year', '==', parseInt(year)) as any
@@ -35,6 +38,9 @@ export async function GET(request: NextRequest) {
 
 // POST - Créer un nouveau module/date
 export async function POST(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const data = await request.json()
 
@@ -50,7 +56,7 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date(),
     }
 
-    const docRef = await adminDb.collection('moduleDates').add(moduleDate)
+    const docRef = await firebase.db.collection('moduleDates').add(moduleDate)
 
     return NextResponse.json({ id: docRef.id, ...moduleDate })
   } catch (error) {
@@ -61,6 +67,9 @@ export async function POST(request: NextRequest) {
 
 // PATCH - Mettre à jour un module
 export async function PATCH(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const data = await request.json()
     const { id, ...updates } = data
@@ -69,7 +78,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Module ID is required' }, { status: 400 })
     }
 
-    await adminDb.collection('moduleDates').doc(id).update({
+    await firebase.db.collection('moduleDates').doc(id).update({
       ...updates,
       updatedAt: new Date(),
     })
@@ -83,6 +92,9 @@ export async function PATCH(request: NextRequest) {
 
 // DELETE - Supprimer un module
 export async function DELETE(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
@@ -91,7 +103,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Module ID is required' }, { status: 400 })
     }
 
-    await adminDb.collection('moduleDates').doc(id).delete()
+    await firebase.db.collection('moduleDates').doc(id).delete()
 
     return NextResponse.json({ success: true })
   } catch (error) {

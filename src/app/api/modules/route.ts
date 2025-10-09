@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb } from '@/lib/firebase-admin'
+import { checkFirebaseAdmin } from '@/lib/firebase-admin-check'
 
 // GET - Récupérer les modules disponibles pour le formulaire public
 export async function GET(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const { searchParams } = new URL(request.url)
     const location = searchParams.get('location') // 'Brest' ou 'Guérande'
 
-    let query = adminDb
+    let query = firebase.db
       .collection('moduleDates')
       .where('isComplete', '==', false) // Seulement les modules non complets
       .orderBy('year')

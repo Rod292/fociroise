@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb } from '@/lib/firebase-admin'
+import { checkFirebaseAdmin } from '@/lib/firebase-admin-check'
 import { Registration } from '@/types/admin'
 
 // GET - Récupérer toutes les inscriptions
 export async function GET(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const moduleDate = searchParams.get('moduleDate')
 
-    let query = adminDb.collection('registrations').orderBy('createdAt', 'desc')
+    let query = firebase.db.collection('registrations').orderBy('createdAt', 'desc')
 
     if (status) {
       query = query.where('status', '==', status) as any
@@ -42,6 +45,9 @@ export async function GET(request: NextRequest) {
 
 // PATCH - Mettre à jour une inscription
 export async function PATCH(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const data = await request.json()
     const { id, ...updates } = data
@@ -50,7 +56,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Registration ID is required' }, { status: 400 })
     }
 
-    await adminDb.collection('registrations').doc(id).update({
+    await firebase.db.collection('registrations').doc(id).update({
       ...updates,
       updatedAt: new Date(),
     })
@@ -64,6 +70,9 @@ export async function PATCH(request: NextRequest) {
 
 // DELETE - Supprimer une inscription
 export async function DELETE(request: NextRequest) {
+  const firebase = checkFirebaseAdmin()
+  if ('error' in firebase) return firebase.error
+
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
@@ -72,7 +81,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Registration ID is required' }, { status: 400 })
     }
 
-    await adminDb.collection('registrations').doc(id).delete()
+    await firebase.db.collection('registrations').doc(id).delete()
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -16,14 +16,19 @@ Cliquez sur "ACTIVER" et attendez quelques minutes.
 3. Choisissez le mode "Production"
 4. Sélectionnez une région (par exemple : `europe-west1`)
 
-### 3. Configurer l'authentification Firebase
+### 3. Configurer l'authentification Firebase avec Google
 
 1. Allez sur https://console.firebase.google.com/project/fociroise-7a148/authentication
 2. Cliquez sur "Commencer"
-3. Activez "Email/Password" comme méthode de connexion
-4. Ajoutez votre compte admin :
-   - Email: `contact@fociroise.fr` (ou votre email admin)
-   - Mot de passe: (choisissez un mot de passe sécurisé)
+3. Dans l'onglet "Sign-in method", activez **Google** comme fournisseur de connexion
+4. Ajoutez votre email de support : `contact@fociroise.fr`
+5. Cliquez sur "Enregistrer"
+
+**Utilisateurs autorisés (liste blanche) :**
+- ✅ `jacquesolivier.pers@gmail.com`
+- ✅ `rodrigue.pers29@gmail.com`
+
+Ces deux emails sont codés en dur dans l'application et sont les seuls qui pourront accéder au panneau d'administration. Tout autre compte Google sera automatiquement rejeté.
 
 ### 4. Configurer les règles de sécurité Firestore
 
@@ -57,8 +62,11 @@ URL : **https://fociroise.fr/jop**
 
 ### Connexion
 
-- Email : `contact@fociroise.fr` (ou l'email configuré)
-- Mot de passe : celui que vous avez défini
+Cliquez sur "Se connecter avec Google" et choisissez l'un des deux comptes autorisés :
+- `jacquesolivier.pers@gmail.com`
+- `rodrigue.pers29@gmail.com`
+
+Tout autre compte sera automatiquement rejeté avec un message d'erreur.
 
 ## 📋 Fonctionnalités disponibles
 
