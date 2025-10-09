@@ -2,32 +2,6 @@
 
 import { useState, useEffect } from 'react'
 
-const MODULE_DATES_2026 = {
-  module1: [
-    { date: '16 & 17 janvier', id: 'm1-jan16' },
-    { date: '30 & 31 janvier', id: 'm1-jan30' },
-    { date: '13 & 14 février', id: 'm1-feb13' },
-  ],
-  module2: [
-    { date: '13 & 14 mars', id: 'm2-mar13' },
-    { date: '27 & 28 mars', id: 'm2-mar27' },
-    { date: '10 & 11 avril', id: 'm2-apr10' },
-  ],
-  module3: [
-    { date: '11 & 12 septembre', id: 'm3-sep11' },
-    { date: '25 & 26 septembre', id: 'm3-sep25' },
-    { date: '9 & 10 octobre', id: 'm3-oct9' },
-  ],
-  moduleProthesiste: [
-    { date: '27 & 28 février', id: 'mp-feb27' },
-  ],
-  guerande: [
-    { date: 'Module 1: 24 & 25 avril', id: 'g-m1-apr24' },
-    { date: 'Module 2: 12 & 13 juin', id: 'g-m2-jun12' },
-    { date: 'Module 3: 23 & 24 octobre', id: 'g-m3-oct23' },
-  ],
-}
-
 export default function InscriptionFormWizard() {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
@@ -53,6 +27,30 @@ export default function InscriptionFormWizard() {
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [availableModules, setAvailableModules] = useState<any>({
+    module1: [],
+    module2: [],
+    module3: [],
+    module4: [],
+    moduleProthesiste: [],
+  })
+  const [loadingModules, setLoadingModules] = useState(true)
+
+  // Charger les modules disponibles depuis l'API
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const response = await fetch('/api/modules')
+        const data = await response.json()
+        setAvailableModules(data.modules || {})
+      } catch (error) {
+        console.error('Error fetching modules:', error)
+      } finally {
+        setLoadingModules(false)
+      }
+    }
+    fetchModules()
+  }, [])
 
   const searchAddress = async (query: string) => {
     if (query.length < 3) {
@@ -191,24 +189,25 @@ export default function InscriptionFormWizard() {
   }
 
   const handleGuerandeToggle = () => {
-    if (!formData.isGuerande) {
-      // Switch to Guérande
-      setFormData({
-        ...formData,
-        isGuerande: true,
-        module1: 'Module 1: 24 & 25 avril',
-        module2: 'Module 2: 12 & 13 juin',
-        module3: 'Module 3: 23 & 24 octobre',
-      })
-    } else {
-      // Switch to Brest
-      setFormData({
-        ...formData,
-        isGuerande: false,
-        module1: '',
-        module2: '',
-        module3: '',
-      })
+    setFormData({
+      ...formData,
+      isGuerande: !formData.isGuerande,
+      module1: '',
+      module2: '',
+      module3: '',
+      module4: '',
+      moduleProthesiste: '',
+    })
+  }
+
+  // Filtrer les modules par localisation
+  const getModulesByLocation = (location: 'Brest' | 'Guérande') => {
+    return {
+      module1: availableModules.module1?.filter((m: any) => m.location === location) || [],
+      module2: availableModules.module2?.filter((m: any) => m.location === location) || [],
+      module3: availableModules.module3?.filter((m: any) => m.location === location) || [],
+      module4: availableModules.module4?.filter((m: any) => m.location === location) || [],
+      moduleProthesiste: availableModules.moduleProthesiste?.filter((m: any) => m.location === location) || [],
     }
   }
 
@@ -550,155 +549,99 @@ export default function InscriptionFormWizard() {
               </div>
             )}
 
-            {!formData.isGuerande ? (
+            {loadingModules ? (
+              <div className="text-center py-8">
+                <p className="text-gray-600">Chargement des modules disponibles...</p>
+              </div>
+            ) : !formData.isGuerande ? (
               <>
-                {/* Module 1 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-3">
-                    Module 1 *
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {MODULE_DATES_2026.module1.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => handleModuleSelect('module1', item.date)}
-                        className={`p-4 rounded-lg border-2 text-left transition-all ${
-                          formData.module1 === item.date
-                            ? 'border-primary-600 bg-primary-50'
-                            : 'border-gray-200 hover:border-primary-300'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900">{item.date}</span>
-                          {formData.module1 === item.date && (
-                            <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  {errors.module1 && <p className="mt-2 text-sm text-red-600">{errors.module1}</p>}
-                </div>
+                {/* Modules Brest */}
+                {(['module1', 'module2', 'module3', 'module4', 'moduleProthesiste'] as const).map((moduleType) => {
+                  const brestModules = getModulesByLocation('Brest')[moduleType]
+                  if (brestModules.length === 0 && moduleType !== 'moduleProthesiste' && moduleType !== 'module4') return null
 
-                {/* Module 2 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-3">
-                    Module 2 *
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {MODULE_DATES_2026.module2.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => handleModuleSelect('module2', item.date)}
-                        className={`p-4 rounded-lg border-2 text-left transition-all ${
-                          formData.module2 === item.date
-                            ? 'border-primary-600 bg-primary-50'
-                            : 'border-gray-200 hover:border-primary-300'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900">{item.date}</span>
-                          {formData.module2 === item.date && (
-                            <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  {errors.module2 && <p className="mt-2 text-sm text-red-600">{errors.module2}</p>}
-                </div>
+                  const isRequired = moduleType !== 'moduleProthesiste' && moduleType !== 'module4'
+                  const label = moduleType === 'moduleProthesiste' ? 'Module Prothésiste' :
+                                moduleType === 'module4' ? 'Module 4' :
+                                moduleType === 'module1' ? 'Module 1' :
+                                moduleType === 'module2' ? 'Module 2' : 'Module 3'
 
-                {/* Module 3 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-3">
-                    Module 3 *
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {MODULE_DATES_2026.module3.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => handleModuleSelect('module3', item.date)}
-                        className={`p-4 rounded-lg border-2 text-left transition-all ${
-                          formData.module3 === item.date
-                            ? 'border-primary-600 bg-primary-50'
-                            : 'border-gray-200 hover:border-primary-300'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900">{item.date}</span>
-                          {formData.module3 === item.date && (
-                            <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  {errors.module3 && <p className="mt-2 text-sm text-red-600">{errors.module3}</p>}
-                </div>
-
-                {/* Module Prothésiste */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-3">
-                    Module Prothésiste <span className="text-gray-500 font-normal">(facultatif)</span>
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {MODULE_DATES_2026.moduleProthesiste.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => handleModuleSelect('moduleProthesiste', item.date)}
-                        className={`p-4 rounded-lg border-2 text-left transition-all ${
-                          formData.moduleProthesiste === item.date
-                            ? 'border-primary-600 bg-primary-50'
-                            : 'border-gray-200 hover:border-primary-300'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900">{item.date}</span>
-                          {formData.moduleProthesiste === item.date && (
-                            <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  return (
+                    <div key={moduleType}>
+                      <label className="block text-sm font-medium text-gray-900 mb-3">
+                        {label} {!isRequired && <span className="text-gray-500 font-normal">(facultatif)</span>}
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {brestModules.map((item: any) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleModuleSelect(moduleType, item.date)}
+                            className={`p-4 rounded-lg border-2 text-left transition-all ${
+                              formData[moduleType] === item.date
+                                ? 'border-primary-600 bg-primary-50'
+                                : 'border-gray-200 hover:border-primary-300'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-gray-900">{item.date}</span>
+                              {formData[moduleType] === item.date && (
+                                <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                      {errors[moduleType] && <p className="mt-2 text-sm text-red-600">{errors[moduleType]}</p>}
+                    </div>
+                  )
+                })}
               </>
             ) : (
-              <div className="bg-white border-2 border-amber-300 rounded-lg p-6">
-                <h4 className="font-bold text-gray-900 mb-4">Cycle complet Guérande 2026</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
-                    <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="font-medium">Module 1: 24 & 25 avril</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
-                    <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="font-medium">Module 2: 12 & 13 juin</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
-                    <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="font-medium">Module 3: 23 & 24 octobre</span>
-                  </div>
-                </div>
-              </div>
+              <>
+                {/* Modules Guérande */}
+                {(['module1', 'module2', 'module3'] as const).map((moduleType) => {
+                  const guerandeModules = getModulesByLocation('Guérande')[moduleType]
+                  if (guerandeModules.length === 0) return null
+
+                  const label = moduleType === 'module1' ? 'Module 1' :
+                                moduleType === 'module2' ? 'Module 2' : 'Module 3'
+
+                  return (
+                    <div key={moduleType}>
+                      <label className="block text-sm font-medium text-gray-900 mb-3">
+                        {label} *
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {guerandeModules.map((item: any) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleModuleSelect(moduleType, item.date)}
+                            className={`p-4 rounded-lg border-2 text-left transition-all ${
+                              formData[moduleType] === item.date
+                                ? 'border-amber-600 bg-amber-50'
+                                : 'border-gray-200 hover:border-amber-300'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-gray-900">{item.date}</span>
+                              {formData[moduleType] === item.date && (
+                                <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                      {errors[moduleType] && <p className="mt-2 text-sm text-red-600">{errors[moduleType]}</p>}
+                    </div>
+                  )
+                })}
+              </>
             )}
           </div>
         )}
