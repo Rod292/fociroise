@@ -179,9 +179,13 @@ export async function POST(request: Request) {
                   <!-- Header -->
                   <tr>
                     <td style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding: 40px 30px; text-align: center;">
-                      <div style="background-color: rgba(255, 255, 255, 0.2); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 40px;">✓</span>
-                      </div>
+                      <table cellpadding="0" cellspacing="0" style="margin: 0 auto 20px;">
+                        <tr>
+                          <td style="background-color: rgba(255, 255, 255, 0.2); width: 80px; height: 80px; border-radius: 50%; text-align: center; vertical-align: middle;">
+                            <span style="font-size: 40px; color: #ffffff; line-height: 80px;">✓</span>
+                          </td>
+                        </tr>
+                      </table>
                       <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">Demande bien reçue !</h1>
                       <p style="margin: 10px 0 0 0; color: #dbeafe; font-size: 16px;">Merci pour votre confiance</p>
                     </td>
