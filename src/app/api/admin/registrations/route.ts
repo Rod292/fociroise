@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
       module1: data.module1,
       module2: data.module2,
       module3: data.module3,
+      module4: data.module4,
       moduleProthesiste: data.moduleProthesiste,
       isGuerande: data.isGuerande || false,
       message: data.message || '',
@@ -102,6 +103,7 @@ export async function POST(request: NextRequest) {
       updateModuleRegistrations(data.module1),
       updateModuleRegistrations(data.module2),
       updateModuleRegistrations(data.module3),
+      updateModuleRegistrations(data.module4),
       updateModuleRegistrations(data.moduleProthesiste),
     ])
 
@@ -150,6 +152,41 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Registration ID is required' }, { status: 400 })
     }
 
+    // Récupérer l'inscription avant de la supprimer pour mettre à jour les compteurs
+    const registrationDoc = await firebase.db.collection('registrations').doc(id).get()
+    const registration = registrationDoc.data()
+
+    if (!registration) {
+      return NextResponse.json({ error: 'Registration not found' }, { status: 404 })
+    }
+
+    // Décrémenter le nombre d'inscriptions pour chaque module
+    const decrementModuleRegistrations = async (moduleDate: string) => {
+      if (!moduleDate) return
+
+      const modulesSnapshot = await firebase.db
+        .collection('moduleDates')
+        .where('date', '==', moduleDate)
+        .get()
+
+      modulesSnapshot.forEach(async (doc) => {
+        const currentCount = doc.data().currentRegistrations || 0
+        await doc.ref.update({
+          currentRegistrations: Math.max(0, currentCount - 1), // Ne jamais descendre en dessous de 0
+          updatedAt: new Date(),
+        })
+      })
+    }
+
+    await Promise.all([
+      decrementModuleRegistrations(registration.module1),
+      decrementModuleRegistrations(registration.module2),
+      decrementModuleRegistrations(registration.module3),
+      decrementModuleRegistrations(registration.module4),
+      decrementModuleRegistrations(registration.moduleProthesiste),
+    ])
+
+    // Supprimer l'inscription
     await firebase.db.collection('registrations').doc(id).delete()
 
     return NextResponse.json({ success: true })
