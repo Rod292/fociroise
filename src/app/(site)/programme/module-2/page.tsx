@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const revalidate = 3600
 
@@ -93,6 +94,39 @@ export default function Module2Page() {
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">Étude des cas présentés par les participants</h3>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Images Module 2 */}
+          <div className="mb-12 max-w-3xl mx-auto">
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module2-1.png"
+                  alt="Formation Module 2 - Ajustement occlusal"
+                  width={363}
+                  height={292}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module2-2.png"
+                  alt="Formation Module 2 - Plaque occlusale"
+                  width={557}
+                  height={366}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module2-3.png"
+                  alt="Formation Module 2 - Travaux pratiques"
+                  width={857}
+                  height={566}
+                  className="w-full h-auto"
+                />
               </div>
             </div>
           </div>

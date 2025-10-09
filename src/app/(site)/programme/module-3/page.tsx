@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const revalidate = 3600
 
@@ -123,6 +124,62 @@ export default function Module3Page() {
                     Etude des cas présentés par les participants
                   </h3>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Images Module 3 */}
+          <div className="mb-12 max-w-4xl mx-auto space-y-2 md:space-y-4">
+            {/* Première ligne : 3 images */}
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module3-1.png"
+                  alt="Formation Module 3 - Dysfonctions cranio-mandibulaires"
+                  width={531}
+                  height={422}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module3-2.png"
+                  alt="Formation Module 3 - Cas complexes"
+                  width={849}
+                  height={561}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module3-3.png"
+                  alt="Formation Module 3 - Numérique en occlusodontie"
+                  width={990}
+                  height={669}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+
+            {/* Deuxième ligne : 2 images */}
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module3-4.png"
+                  alt="Formation Module 3 - Travaux pratiques"
+                  width={1003}
+                  height={669}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module3-5.png"
+                  alt="Formation Module 3 - Validation des connaissances"
+                  width={1003}
+                  height={632}
+                  className="w-full h-auto"
+                />
               </div>
             </div>
           </div>

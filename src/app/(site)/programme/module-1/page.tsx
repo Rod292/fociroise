@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const revalidate = 3600
 
@@ -117,6 +118,53 @@ export default function Module1Page() {
                     <li>Recherche des interférences en rétrusion, latéralité et propulsion</li>
                   </ul>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Images Module 1 */}
+          <div className="mb-12 max-w-3xl mx-auto space-y-4">
+            {/* Deux images verticales */}
+            <div className="flex gap-2 md:gap-4 justify-center">
+              <div className="rounded-lg overflow-hidden shadow-md w-[90px] md:w-auto" style={{maxWidth: '183px'}}>
+                <Image
+                  src="/images/module1-.png"
+                  alt="Travaux pratiques Module 1 - Articulateurs DENAR"
+                  width={183}
+                  height={455}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="rounded-lg overflow-hidden shadow-md w-[130px] md:w-auto" style={{maxWidth: '263px'}}>
+                <Image
+                  src="/images/module1-2.png"
+                  alt="Analyse de l'occlusion Module 1"
+                  width={263}
+                  height={390}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+
+            {/* Deux images horizontales */}
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module1-3.png"
+                  alt="Pratique clinique Module 1"
+                  width={681}
+                  height={469}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <Image
+                  src="/images/module1-4.png"
+                  alt="Démonstration pratique Module 1"
+                  width={631}
+                  height={488}
+                  className="w-full h-auto"
+                />
               </div>
             </div>
           </div>
