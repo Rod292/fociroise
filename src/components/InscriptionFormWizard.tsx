@@ -42,6 +42,7 @@ export default function InscriptionFormWizard() {
     module1: '',
     module2: '',
     module3: '',
+    module4: '',
     moduleProthesiste: '',
     isGuerande: false,
     message: '',
@@ -182,7 +183,7 @@ export default function InscriptionFormWizard() {
     setStep(step - 1)
   }
 
-  const handleModuleSelect = (module: 'module1' | 'module2' | 'module3' | 'moduleProthesiste', value: string) => {
+  const handleModuleSelect = (module: 'module1' | 'module2' | 'module3' | 'module4' | 'moduleProthesiste', value: string) => {
     setFormData({ ...formData, [module]: formData[module] === value ? '' : value })
     if (errors[module]) {
       setErrors({ ...errors, [module]: '' })
@@ -266,6 +267,7 @@ export default function InscriptionFormWizard() {
               module1: '',
               module2: '',
               module3: '',
+              module4: '',
               moduleProthesiste: '',
               isGuerande: false,
               message: '',

@@ -20,6 +20,7 @@ export async function POST(request: Request) {
       module1,
       module2,
       module3,
+      module4,
       moduleProthesiste,
       isGuerande,
       message,
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
         module1,
         module2,
         module3,
+        module4,
         moduleProthesiste,
         isGuerande: isGuerande || false,
         message,
@@ -74,6 +76,7 @@ export async function POST(request: Request) {
         updateModuleRegistrations(module1),
         updateModuleRegistrations(module2),
         updateModuleRegistrations(module3),
+        updateModuleRegistrations(module4),
         updateModuleRegistrations(moduleProthesiste),
       ])
     } else {
@@ -173,6 +176,11 @@ export async function POST(request: Request) {
                             ${module3 ? `
                               <div style="background-color: #ffffff; padding: 12px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #e5e7eb;">
                                 <strong style="color: #7c3aed;">Module 3 :</strong> <span style="color: #1f2937;">${module3}</span>
+                              </div>
+                            ` : ''}
+                            ${module4 ? `
+                              <div style="background-color: #ffffff; padding: 12px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #e5e7eb;">
+                                <strong style="color: #7c3aed;">Module 4 :</strong> <span style="color: #1f2937;">${module4}</span>
                               </div>
                             ` : ''}
                             ${moduleProthesiste ? `
@@ -285,6 +293,13 @@ export async function POST(request: Request) {
                               <div style="background-color: #ffffff; padding: 14px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #e5e7eb;">
                                 <strong style="color: #2563eb;">Module 3</strong><br/>
                                 <span style="color: #6b7280; font-size: 14px;">${module3}</span>
+                              </div>
+                            ` : ''}
+
+                            ${module4 ? `
+                              <div style="background-color: #ffffff; padding: 14px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #e5e7eb;">
+                                <strong style="color: #2563eb;">Module 4</strong><br/>
+                                <span style="color: #6b7280; font-size: 14px;">${module4}</span>
                               </div>
                             ` : ''}
 
