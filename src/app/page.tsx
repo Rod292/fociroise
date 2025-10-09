@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { CTAButtonGroup } from '@/components/CTAButtons'
 import AlertBanner from '@/components/AlertBanner'
 import AnimatedLogo from '@/components/AnimatedLogo'
