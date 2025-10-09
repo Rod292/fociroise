@@ -12,20 +12,21 @@ export async function GET(request: NextRequest) {
     const year = searchParams.get('year')
     const location = searchParams.get('location')
 
-    let query = firebase.db.collection('moduleDates').orderBy('year', 'desc').orderBy('module')
+    // Requête simple sans orderBy pour éviter d'avoir besoin d'index composite
+    let query = firebase.db.collection('moduleDates') as any
 
     if (year) {
-      query = query.where('year', '==', parseInt(year)) as any
+      query = query.where('year', '==', parseInt(year))
     }
 
     if (location) {
-      query = query.where('location', '==', location) as any
+      query = query.where('location', '==', location)
     }
 
     const snapshot = await query.get()
     const modules: any[] = []
 
-    snapshot.forEach((doc) => {
+    snapshot.forEach((doc: any) => {
       const data = doc.data()
       modules.push({
         id: doc.id,
@@ -33,6 +34,16 @@ export async function GET(request: NextRequest) {
         createdAt: data.createdAt?.toDate?.() || data.createdAt,
         updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
       })
+    })
+
+    // Tri côté serveur pour éviter les index composites
+    modules.sort((a, b) => {
+      // D'abord par année (desc)
+      if (b.year !== a.year) return b.year - a.year
+      // Puis par module (asc)
+      if (a.module < b.module) return -1
+      if (a.module > b.module) return 1
+      return 0
     })
 
     return NextResponse.json({ modules })
