@@ -1,7 +1,7 @@
 export interface ModuleDate {
   id: string
-  module: 'module1' | 'module2' | 'module3' | 'moduleProthesiste'
-  date: string // "15-16 février 2026"
+  module: 'module1' | 'module2' | 'module3' | 'module4' | 'moduleProthesiste'
+  date: string // "16 & 17 janvier"
   location: 'Brest' | 'Guérande'
   maxPlaces: number
   currentRegistrations: number
@@ -27,6 +27,7 @@ export interface Registration {
   module1?: string
   module2?: string
   module3?: string
+  module4?: string
   moduleProthesiste?: string
   isGuerande: boolean
   // Message optionnel

@@ -324,6 +324,7 @@ function ModulesTab({ modules, onRefresh, onToggleComplete, onDelete, onShowAdd 
     module1: 'Module 1',
     module2: 'Module 2',
     module3: 'Module 3',
+    module4: 'Module 4',
     moduleProthesiste: 'Module Prothésiste (Facultatif)'
   }
 
@@ -475,6 +476,7 @@ function RegistrationsTab({ registrations, selectedStatus, onStatusChange, onUpd
                     {reg.module1 && <div>• M1: {reg.module1}</div>}
                     {reg.module2 && <div>• M2: {reg.module2}</div>}
                     {reg.module3 && <div>• M3: {reg.module3}</div>}
+                    {reg.module4 && <div>• M4: {reg.module4}</div>}
                     {reg.moduleProthesiste && <div className="text-amber-600">• MP: {reg.moduleProthesiste}</div>}
                   </div>
                 </td>
@@ -561,6 +563,7 @@ function AddModuleModal({ onClose, onSuccess }: any) {
               <option value="module1">Module 1</option>
               <option value="module2">Module 2</option>
               <option value="module3">Module 3</option>
+              <option value="module4">Module 4</option>
               <option value="moduleProthesiste">Module Prothésiste</option>
             </select>
           </div>

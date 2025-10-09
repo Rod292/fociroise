@@ -19,33 +19,37 @@ const db = getFirestore(app)
 
 const modules2026 = {
   module1: [
-    { date: '15-16 février 2026', location: 'Brest' },
-    { date: '22-23 mars 2026', location: 'Brest' },
-    { date: '17-18 mai 2026', location: 'Brest' },
+    { date: '16 & 17 janvier', location: 'Brest' },
+    { date: '30 & 31 janvier', location: 'Brest' },
+    { date: '13 & 14 février', location: 'Brest' },
   ],
   module2: [
-    { date: '7-8 juin 2026', location: 'Brest' },
-    { date: '13-14 septembre 2026', location: 'Brest' },
-    { date: '11-12 octobre 2026', location: 'Brest' },
+    { date: '13 & 14 mars', location: 'Brest' },
+    { date: '27 & 28 mars', location: 'Brest' },
+    { date: '10 & 11 avril', location: 'Brest' },
   ],
   module3: [
-    { date: '8-9 novembre 2026', location: 'Brest' },
-    { date: '6-7 décembre 2026', location: 'Brest' },
+    { date: '11 & 12 septembre', location: 'Brest' },
+    { date: '25 & 26 septembre', location: 'Brest' },
+    { date: '9 & 10 octobre', location: 'Brest' },
+  ],
+  module4: [
+    { date: 'Sur demande', location: 'Brest' },
   ],
   moduleProthesiste: [
-    { date: '10-11 janvier 2026', location: 'Brest' },
+    { date: '27 & 28 février', location: 'Brest' },
   ],
 }
 
 const modulesGuerande = {
   module1: [
-    { date: '19-20 avril 2026', location: 'Guérande' },
+    { date: '24 & 25 avril', location: 'Guérande' },
   ],
   module2: [
-    { date: '31 mai-1er juin 2026', location: 'Guérande' },
+    { date: '12 & 13 juin', location: 'Guérande' },
   ],
   module3: [
-    { date: '20-21 septembre 2026', location: 'Guérande' },
+    { date: '23 & 24 octobre', location: 'Guérande' },
   ],
 }
 
