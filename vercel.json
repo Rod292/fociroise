@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.fociroise.fr"
+        }
+      ],
+      "destination": "https://fociroise.fr/:path*",
+      "permanent": true
+    }
+  ]
+}
