@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { CTAButtonGroup } from '@/components/CTAButtons'
-import AlertBanner from '@/components/AlertBanner'
 import AnimatedLogo from '@/components/AnimatedLogo'
 import type { Metadata } from 'next'
 
@@ -27,9 +26,6 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      {/* Bannière d'alerte dismissible */}
-      <AlertBanner />
-
       {/* Section Hero - Au-dessus de la ligne de flottaison */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-primary-50">
         {/* Motif décoratif subtil en arrière-plan */}
