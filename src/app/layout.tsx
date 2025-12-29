@@ -1,15 +1,22 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Fraunces, Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Analytics } from '@vercel/analytics/next'
 
-// Police système optimisée pour la lisibilité médicale/professionnelle
-const inter = Inter({
+// Police display pour les titres - élégante et académique
+const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-display',
+})
+
+// Police body moderne et lisible
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body',
 })
 
 // Metadata SEO pour toute l'application
@@ -69,7 +76,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" className={inter.variable}>
+    <html lang="fr" className={`${fraunces.variable} ${plusJakarta.variable}`}>
       <body className="flex min-h-screen flex-col">
         {/* Header avec navigation accessible */}
         <Header />

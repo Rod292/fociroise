@@ -4,10 +4,11 @@
 
 /* Variables globales pour cohérence visuelle */
 :root {
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
+  --color-primary: #486581;
+  --color-primary-dark: #334e68;
+  --color-accent: #c9a227;
+  --color-text: #102a43;
+  --color-text-muted: #627d98;
 }
 
 /* Base styles pour améliorer l'accessibilité et la lisibilité */
@@ -17,7 +18,12 @@
   }
 
   body {
-    @apply text-gray-900 antialiased;
+    @apply text-gray-900 antialiased font-body;
+  }
+
+  /* Typographie display pour les titres */
+  h1, h2, h3, h4 {
+    @apply font-display;
   }
 
   /* Focus visible pour accessibilité clavier */
@@ -48,5 +54,22 @@
 
   .nav-link-active {
     @apply text-primary-600 font-semibold;
+  }
+
+  /* Bouton primaire avec style doré */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold
+           text-white bg-primary-700 rounded-xl
+           hover:bg-primary-800 transition-all duration-300
+           shadow-lg hover:shadow-xl hover:-translate-y-0.5
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
+  }
+
+  /* Bouton accent doré */
+  .btn-accent {
+    @apply inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold
+           text-primary-900 bg-accent-gold rounded-xl
+           hover:bg-accent-gold-light transition-all duration-300
+           shadow-lg hover:shadow-xl hover:-translate-y-0.5;
   }
 }

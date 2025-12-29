@@ -9,7 +9,7 @@ import { footerNavigation, contactInfo } from '@/config/navigation'
  */
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-gray-50 to-gray-100 border-t border-gray-200">
+    <footer className="bg-gradient-to-b from-primary-50 to-primary-100/50 border-t border-primary-100">
       <div className="container-custom py-16 lg:py-20">
         {/* Grille de colonnes responsive */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-12">
@@ -42,8 +42,8 @@ export default function Footer() {
 
           {/* Colonne 2: Ressources */}
           <div>
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-5 flex items-center gap-2">
-              <div className="w-1 h-4 bg-primary-600 rounded-full"></div>
+            <h3 className="text-sm font-bold text-primary-900 uppercase tracking-wider mb-5 flex items-center gap-2">
+              <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
               Ressources
             </h3>
             <ul className="space-y-3">
@@ -65,8 +65,8 @@ export default function Footer() {
 
           {/* Colonne 3: À propos */}
           <div>
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-5 flex items-center gap-2">
-              <div className="w-1 h-4 bg-primary-600 rounded-full"></div>
+            <h3 className="text-sm font-bold text-primary-900 uppercase tracking-wider mb-5 flex items-center gap-2">
+              <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
               À propos
             </h3>
             <ul className="space-y-3">
@@ -88,8 +88,8 @@ export default function Footer() {
 
           {/* Colonne 4: Contact */}
           <div>
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-5 flex items-center gap-2">
-              <div className="w-1 h-4 bg-primary-600 rounded-full"></div>
+            <h3 className="text-sm font-bold text-primary-900 uppercase tracking-wider mb-5 flex items-center gap-2">
+              <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
               Contact
             </h3>
             <ul className="space-y-4">
@@ -169,14 +169,14 @@ export default function Footer() {
         </div>
 
         {/* Séparateur et copyright */}
-        <div className="mt-12 pt-8 border-t border-gray-300">
+        <div className="mt-12 pt-8 border-t border-primary-200">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-primary-700">
               &copy; {new Date().getFullYear()} FOC Iroise Brest. Tous droits réservés.
             </p>
             <Link
               href="/mentions-legales"
-              className="text-sm text-gray-600 hover:text-primary-600 transition-colors"
+              className="text-sm text-primary-600 hover:text-accent-gold transition-colors"
             >
               Mentions légales
             </Link>

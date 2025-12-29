@@ -97,13 +97,13 @@ export default function Header() {
             <div className="flex items-center gap-3 ml-6 border-l border-gray-200 pl-6">
               <Link
                 href="/inscription"
-                className="px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-all shadow-sm hover:shadow-md"
+                className="px-5 py-2.5 text-sm font-semibold text-primary-900 bg-accent-gold rounded-lg hover:bg-accent-gold-light transition-all shadow-sm hover:shadow-md"
               >
                 Inscription
               </Link>
               <Link
                 href="/formateurs"
-                className="px-5 py-2.5 text-sm font-semibold text-primary-600 border-2 border-primary-600 rounded-lg hover:bg-primary-50 transition-all"
+                className="px-5 py-2.5 text-sm font-semibold text-primary-700 border-2 border-primary-300 rounded-lg hover:border-primary-600 hover:bg-primary-50 transition-all"
               >
                 L'équipe
               </Link>
@@ -189,14 +189,14 @@ export default function Header() {
               <div className="pt-4 pb-2 px-4 space-y-3 border-t border-gray-200 mt-4">
                 <Link
                   href="/inscription"
-                  className="block w-full px-4 py-3 text-center text-base font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700"
+                  className="block w-full px-4 py-3 text-center text-base font-semibold text-primary-900 bg-accent-gold rounded-lg hover:bg-accent-gold-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Inscription
                 </Link>
                 <Link
                   href="/formateurs"
-                  className="block w-full px-4 py-3 text-center text-base font-semibold text-primary-600 border border-primary-600 rounded-lg hover:bg-primary-50"
+                  className="block w-full px-4 py-3 text-center text-base font-semibold text-primary-700 border-2 border-primary-300 rounded-lg hover:border-primary-600 hover:bg-primary-50"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Découvrir l'équipe
