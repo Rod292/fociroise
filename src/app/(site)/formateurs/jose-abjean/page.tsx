@@ -6,13 +6,55 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'José Abjean - Professeur émérite',
-  description: 'Biographie du Professeur José Abjean, professeur des universités émérite et auteur de référence sur l\'occlusion dentaire.',
+  description: 'Pr José Abjean, créateur de la méthode Abjean en occlusodontie. Auteur de "L\'Occlusion en pratique clinique". Plaque occlusale d\'Abjean, butée incisive. Fondateur FOC Iroise.',
+  alternates: {
+    canonical: 'https://fociroise.fr/formateurs/jose-abjean',
+  },
+  openGraph: {
+    title: 'Pr José Abjean - Fondateur FOC Iroise',
+    description: 'Professeur émérite, auteur de L\'Occlusion en pratique clinique. Expert en occlusodontie.',
+    url: 'https://fociroise.fr/formateurs/jose-abjean',
+  },
+}
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'José Abjean',
+  jobTitle: 'Professeur des universités émérite',
+  description: 'Ancien chef du service d\'Odontologie du CHU de Brest, auteur de plusieurs livres sur l\'occlusion dentaire.',
+  worksFor: {
+    '@type': 'EducationalOrganization',
+    name: 'FOC Iroise',
+    url: 'https://fociroise.fr',
+  },
+  image: 'https://fociroise.fr/images/abjean.png',
+  sameAs: [],
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://fociroise.fr' },
+    { '@type': 'ListItem', position: 2, name: 'Formateurs', item: 'https://fociroise.fr/formateurs' },
+    { '@type': 'ListItem', position: 3, name: 'José Abjean', item: 'https://fociroise.fr/formateurs/jose-abjean' },
+  ],
 }
 
 export default function JoseAbjeanPage() {
   return (
-    <div className="bg-white min-h-screen">
-      <div className="container-custom py-20 sm:py-28">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="bg-white min-h-screen">
+        <div className="container-custom py-20 sm:py-28">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <nav className="mb-8 text-sm" aria-label="Breadcrumb">
@@ -70,6 +112,7 @@ export default function JoseAbjeanPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

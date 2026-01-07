@@ -220,7 +220,7 @@ export default function Module4Page() {
               </div>
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border-2 border-white">
                 <Image
-                  src="/images/Module-4-Diplomes2.JPG"
+                  src="/images/Module-4-Diplomes2-optimized.jpg"
                   alt="Remise de diplômes Module 4"
                   fill
                   className="object-cover"

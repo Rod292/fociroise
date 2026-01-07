@@ -284,7 +284,7 @@ export default function HomePage() {
                                 rounded-3xl rotate-1 group-hover:rotate-0 transition-transform duration-500" />
 
                 <Image
-                  src="/images/EquipeFocIroise-1.png"
+                  src="/images/EquipeFocIroise-1-optimized.jpg"
                   alt="L'équipe des formateurs FOC Iroise"
                   width={600}
                   height={400}

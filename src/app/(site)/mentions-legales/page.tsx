@@ -4,7 +4,14 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Mentions Légales',
-  description: 'Mentions légales du site FOC Iroise Brest - Formation occlusale continue',
+  description: 'Mentions légales du site FOC Iroise Brest - Formation occlusale continue. Informations légales, éditeur, hébergeur.',
+  alternates: {
+    canonical: 'https://fociroise.fr/mentions-legales',
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 }
 
 /**

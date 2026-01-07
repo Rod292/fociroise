@@ -4,13 +4,73 @@ import Link from 'next/link'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Module Prothésiste',
-  description: 'Module spécifique pour prothésistes dentaires : Savoir observer et analyser l\'occlusion individuelle et optimiser les transmissions praticien/prothésiste',
+  title: 'Module Prothésiste - Formation pour prothésistes dentaires',
+  description: 'Formation occlusodontie pour prothésistes dentaires. Plaque occlusale d\'Abjean, transmission praticien/prothésiste, CFAO dentaire. Méthode Abjean à Brest.',
+  alternates: {
+    canonical: 'https://fociroise.fr/programme/module-prothesiste',
+  },
+  openGraph: {
+    title: 'Module Prothésiste | FOC Iroise',
+    description: 'Formation spécialisée pour prothésistes dentaires. Optimiser les transmissions avec le praticien.',
+    url: 'https://fociroise.fr/programme/module-prothesiste',
+  },
+}
+
+const courseJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'Module Prothésiste - Formation occlusale pour prothésistes',
+  description: 'Savoir observer et analyser l\'occlusion individuelle et optimiser les transmissions praticien/prothésiste.',
+  provider: {
+    '@type': 'EducationalOrganization',
+    name: 'FOC Iroise',
+    url: 'https://fociroise.fr',
+  },
+  courseCode: 'FOC-PROTH',
+  hasCourseInstance: {
+    '@type': 'CourseInstance',
+    courseMode: 'onsite',
+    duration: 'P2D',
+    location: {
+      '@type': 'Place',
+      name: 'FOC Iroise',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '22 rue Algésiras',
+        addressLocality: 'Brest',
+        postalCode: '29200',
+        addressCountry: 'FR',
+      },
+    },
+  },
+  audience: {
+    '@type': 'Audience',
+    audienceType: 'Prothésistes dentaires',
+  },
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://fociroise.fr' },
+    { '@type': 'ListItem', position: 2, name: 'Programme', item: 'https://fociroise.fr/programme' },
+    { '@type': 'ListItem', position: 3, name: 'Module Prothésiste', item: 'https://fociroise.fr/programme/module-prothesiste' },
+  ],
 }
 
 export default function ModuleProthesistePage() {
   return (
-    <div className="bg-white">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="bg-white">
       <div className="container-custom section-spacing">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
@@ -240,6 +300,7 @@ export default function ModuleProthesistePage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

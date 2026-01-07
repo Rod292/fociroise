@@ -6,12 +6,53 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Pascale Bellon - Docteur en chirurgie dentaire',
-  description: 'Biographie de Pascale Bellon, docteur en chirurgie dentaire et spécialiste en parodontologie.',
+  description: 'Biographie de Pascale Bellon, docteur en chirurgie dentaire, spécialiste en parodontologie et formatrice FOC Iroise à Brest.',
+  alternates: {
+    canonical: 'https://fociroise.fr/formateurs/pascale-bellon',
+  },
+  openGraph: {
+    title: 'Dr Pascale Bellon - Formatrice FOC Iroise',
+    description: 'Docteur en chirurgie dentaire, spécialiste en parodontologie et implantologie.',
+    url: 'https://fociroise.fr/formateurs/pascale-bellon',
+  },
+}
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Pascale Bellon',
+  jobTitle: 'Docteur en chirurgie dentaire',
+  description: 'Ancienne assistante en parodontologie à la Faculté d\'Odontologie de Brest, spécialiste en parodontologie et implantologie.',
+  worksFor: {
+    '@type': 'EducationalOrganization',
+    name: 'FOC Iroise',
+    url: 'https://fociroise.fr',
+  },
+  image: 'https://fociroise.fr/images/bellon.png',
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://fociroise.fr' },
+    { '@type': 'ListItem', position: 2, name: 'Formateurs', item: 'https://fociroise.fr/formateurs' },
+    { '@type': 'ListItem', position: 3, name: 'Pascale Bellon', item: 'https://fociroise.fr/formateurs/pascale-bellon' },
+  ],
 }
 
 export default function PascaleBellonPage() {
   return (
-    <div className="bg-white min-h-screen">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="bg-white min-h-screen">
       <div className="container-custom py-20 sm:py-28">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
@@ -70,6 +111,7 @@ export default function PascaleBellonPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

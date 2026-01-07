@@ -6,12 +6,54 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Jacques-Olivier Pers - Professeur de classe exceptionnelle',
-  description: 'Biographie du Professeur Jacques-Olivier Pers, professeur de classe exceptionnelle et chercheur en immunologie.',
+  description: 'Biographie du Professeur Jacques-Olivier Pers, professeur de classe exceptionnelle, chercheur en immunologie et formateur FOC Iroise.',
+  alternates: {
+    canonical: 'https://fociroise.fr/formateurs/jacques-olivier-pers',
+  },
+  openGraph: {
+    title: 'Pr Jacques-Olivier Pers - Formateur FOC Iroise',
+    description: 'Professeur de classe exceptionnelle, chercheur en immunologie. Plus de 250 publications scientifiques.',
+    url: 'https://fociroise.fr/formateurs/jacques-olivier-pers',
+  },
+}
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jacques-Olivier Pers',
+  jobTitle: 'Professeur de classe exceptionnelle',
+  description: 'Professeur des Universités, habilité à diriger les recherches, docteur en Immunologie et en chirurgie-dentaire. Plus de 250 publications scientifiques.',
+  worksFor: {
+    '@type': 'EducationalOrganization',
+    name: 'FOC Iroise',
+    url: 'https://fociroise.fr',
+  },
+  image: 'https://fociroise.fr/images/pers.png',
+  alumniOf: 'Université de Bretagne Occidentale',
+}
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://fociroise.fr' },
+    { '@type': 'ListItem', position: 2, name: 'Formateurs', item: 'https://fociroise.fr/formateurs' },
+    { '@type': 'ListItem', position: 3, name: 'Jacques-Olivier Pers', item: 'https://fociroise.fr/formateurs/jacques-olivier-pers' },
+  ],
 }
 
 export default function JacquesOlivierPersPage() {
   return (
-    <div className="bg-white min-h-screen">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="bg-white min-h-screen">
       <div className="container-custom py-20 sm:py-28">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
@@ -78,6 +120,7 @@ export default function JacquesOlivierPersPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
