@@ -58,6 +58,7 @@ export const footerNavigation = {
   resources: [
     { label: 'Programme', href: '/programme' },
     { label: 'Inscription & Accès', href: '/inscription' },
+    { label: 'FAQ', href: '/faq' },
   ],
   about: [
     { label: 'Contact', href: '/inscription' }, // Contact fusionné avec inscription
